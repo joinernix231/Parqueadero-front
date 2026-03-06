@@ -1,0 +1,60 @@
+<div class="vehicle-form-container">
+  <h1 class="page-title">Nuevo Vehículo</h1>
+
+  <mat-card>
+    <mat-card-content>
+      <form [formGroup]="vehicleForm" (ngSubmit)="onSubmit()" class="vehicle-form">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Placa</mat-label>
+          <input matInput formControlName="plate" placeholder="Ej: ABC123">
+          <mat-icon matPrefix>confirmation_number</mat-icon>
+          <mat-error *ngIf="vehicleForm.get('plate')?.hasError('required')">
+            La placa es obligatoria
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Propietario</mat-label>
+          <input matInput formControlName="owner_name" placeholder="Nombre completo">
+          <mat-icon matPrefix>person</mat-icon>
+          <mat-error *ngIf="vehicleForm.get('owner_name')?.hasError('required')">
+            El nombre del propietario es obligatorio
+          </mat-error>
+        </mat-form-field>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline">
+            <mat-label>Teléfono</mat-label>
+            <input matInput formControlName="phone" placeholder="1234567890">
+            <mat-icon matPrefix>phone</mat-icon>
+            <mat-error *ngIf="vehicleForm.get('phone')?.hasError('required')">
+              El teléfono es obligatorio
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Tipo de Vehículo</mat-label>
+            <mat-select formControlName="vehicle_type">
+              @for (type of vehicleTypes; track type.value) {
+                <mat-option [value]="type.value">{{ type.label }}</mat-option>
+              }
+            </mat-select>
+            <mat-icon matPrefix>directions_car</mat-icon>
+          </mat-form-field>
+        </div>
+
+        <div class="form-actions">
+          <button mat-button type="button" (click)="onCancel()">Cancelar</button>
+          <button mat-raised-button color="primary" type="submit" [disabled]="vehicleForm.invalid || isLoading">
+            Registrar
+          </button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>
+
+
+
+
+

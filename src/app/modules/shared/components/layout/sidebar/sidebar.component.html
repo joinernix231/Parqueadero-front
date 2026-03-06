@@ -1,0 +1,28 @@
+<nav class="sidebar" [class.collapsed]="!isOpen">
+  <div class="sidebar-logo" *ngIf="isOpen">
+    <div class="logo-text">Parking Pro</div>
+  </div>
+  
+  <div class="sidebar-content">
+    <mat-nav-list>
+      @for (item of menuItems; track item.route) {
+        @if (isMenuItemVisible(item)) {
+          <a 
+            mat-list-item 
+            [routerLink]="item.route"
+            [class.active]="isActive(item.route)"
+            class="menu-item"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{exact: false}">
+            <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
+            <span matListItemTitle class="menu-label">{{ item.label }}</span>
+          </a>
+        }
+      }
+    </mat-nav-list>
+  </div>
+</nav>
+
+
+
+

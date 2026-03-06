@@ -1,0 +1,131 @@
+.sidebar {
+  width: 280px;
+  background-color: var(--sidebar-bg, #1e293b);
+  border-right: 1px solid var(--sidebar-border, #334155);
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  &.collapsed {
+    width: 0;
+    transform: translateX(-100%);
+    border-right: none;
+  }
+}
+
+.sidebar-content {
+  padding: 1.5rem 0.75rem;
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  
+  // Custom scrollbar
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: var(--text-tertiary, #94a3b8);
+    border-radius: 3px;
+    
+    &:hover {
+      background: var(--text-secondary, #64748b);
+    }
+  }
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  margin: 0.25rem 0.5rem;
+  color: #cbd5e1;
+  text-decoration: none;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: var(--radius-md, 0.5rem);
+  position: relative;
+  font-size: 0.9375rem;
+  font-weight: 500;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+    transform: translateX(2px);
+  }
+
+  &.active {
+    background-color: var(--primary-color, #6366f1);
+    color: #ffffff;
+    font-weight: 600;
+    
+    &::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 3px;
+      height: 60%;
+      background-color: #ffffff;
+      border-radius: 0 2px 2px 0;
+    }
+  }
+
+  mat-icon {
+    margin-right: 0.75rem;
+    color: inherit;
+    font-size: 1.5rem;
+    width: 1.5rem;
+    height: 1.5rem;
+    transition: transform 0.2s ease;
+  }
+
+  &:hover mat-icon {
+    transform: scale(1.1);
+  }
+
+  .menu-label {
+    white-space: nowrap;
+    flex: 1;
+    color: inherit;
+  }
+}
+
+// Logo section (if needed)
+.sidebar-logo {
+  padding: 1.5rem 1rem;
+  border-bottom: 1px solid var(--sidebar-border, #334155);
+  margin-bottom: 0.5rem;
+  
+  .logo-text {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #ffffff;
+    letter-spacing: -0.02em;
+  }
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    position: fixed;
+    height: calc(100vh - 64px);
+    top: 64px;
+    transform: translateX(-100%);
+    box-shadow: var(--shadow-xl, 0 20px 25px -5px rgba(0, 0, 0, 0.1));
+
+    &:not(.collapsed) {
+      transform: translateX(0);
+    }
+  }
+}
+
+
+
+

@@ -1,0 +1,65 @@
+<mat-toolbar class="header-toolbar">
+  <div class="header-left">
+    <button mat-icon-button (click)="onToggleSidebar()" class="menu-button">
+      <mat-icon>menu</mat-icon>
+    </button>
+    
+    <!-- Search Bar -->
+    <div class="search-container">
+      <mat-icon class="search-icon">search</mat-icon>
+      <input 
+        type="text" 
+        class="search-input" 
+        placeholder="Buscar..."
+        (focus)="onSearchFocus()"
+        (blur)="onSearchBlur()"
+        [class.focused]="isSearchFocused()">
+    </div>
+  </div>
+
+  <div class="header-right">
+    <!-- User Menu -->
+    <div class="user-info">
+      <div class="user-details">
+        <span class="user-name">{{ currentUser()?.name }}</span>
+        <span class="user-role">{{ getRoleLabel(currentUser()?.role) }}</span>
+      </div>
+    </div>
+    
+    <button mat-icon-button [matMenuTriggerFor]="userMenu" class="user-menu-button">
+      <div class="user-avatar">
+        {{ getUserInitials() }}
+      </div>
+    </button>
+    
+    <mat-menu #userMenu="matMenu" class="user-menu">
+      <div class="menu-header">
+        <div class="menu-user-info">
+          <div class="menu-avatar">{{ getUserInitials() }}</div>
+          <div>
+            <div class="menu-user-name">{{ currentUser()?.name }}</div>
+            <div class="menu-user-email">{{ currentUser()?.email }}</div>
+          </div>
+        </div>
+      </div>
+      <mat-divider></mat-divider>
+      <button mat-menu-item>
+        <mat-icon>person</mat-icon>
+        <span>Mi Perfil</span>
+      </button>
+      <button mat-menu-item>
+        <mat-icon>settings</mat-icon>
+        <span>Configuración</span>
+      </button>
+      <mat-divider></mat-divider>
+      <button mat-menu-item (click)="onLogout()">
+        <mat-icon>logout</mat-icon>
+        <span>Cerrar Sesión</span>
+      </button>
+    </mat-menu>
+  </div>
+</mat-toolbar>
+
+
+
+

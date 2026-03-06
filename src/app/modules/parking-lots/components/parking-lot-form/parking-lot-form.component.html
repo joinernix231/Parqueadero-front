@@ -1,0 +1,112 @@
+<div class="parking-lot-form-container">
+  <h1 class="page-title">
+    {{ isEditMode ? 'Editar Estacionamiento' : 'Nuevo Estacionamiento' }}
+  </h1>
+
+  @if (isLoading) {
+    <app-loading-spinner message="Cargando datos..."></app-loading-spinner>
+  } @else {
+    <mat-card>
+      <mat-card-content>
+        <form [formGroup]="parkingLotForm" (ngSubmit)="onSubmit()" class="parking-lot-form">
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Nombre</mat-label>
+              <input matInput formControlName="name" placeholder="Ej: Estacionamiento Central">
+              <mat-icon matPrefix>local_parking</mat-icon>
+              <mat-error *ngIf="parkingLotForm.get('name')?.hasError('required')">
+                El nombre es obligatorio
+              </mat-error>
+              <mat-error *ngIf="parkingLotForm.get('name')?.hasError('minlength')">
+                El nombre debe tener al menos 3 caracteres
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="form-row">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Dirección</mat-label>
+              <input matInput formControlName="address" placeholder="Ej: Calle Principal 123">
+              <mat-icon matPrefix>location_on</mat-icon>
+              <mat-error *ngIf="parkingLotForm.get('address')?.hasError('required')">
+                La dirección es obligatoria
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="form-row">
+            <mat-form-field appearance="outline">
+              <mat-label>Espacios Totales</mat-label>
+              <input matInput type="number" formControlName="total_spots" min="1">
+              <mat-icon matPrefix>space_dashboard</mat-icon>
+              <mat-error *ngIf="parkingLotForm.get('total_spots')?.hasError('required')">
+                El número de espacios es obligatorio
+              </mat-error>
+              <mat-error *ngIf="parkingLotForm.get('total_spots')?.hasError('min')">
+                Debe tener al menos 1 espacio
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Tarifa Día ($/hora)</mat-label>
+              <input matInput type="number" formControlName="hourly_rate_day" min="0" step="0.01">
+              <mat-icon matPrefix>attach_money</mat-icon>
+              <mat-error *ngIf="parkingLotForm.get('hourly_rate_day')?.hasError('required')">
+                La tarifa diurna es obligatoria
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Tarifa Noche ($/hora)</mat-label>
+              <input matInput type="number" formControlName="hourly_rate_night" min="0" step="0.01">
+              <mat-icon matPrefix>attach_money</mat-icon>
+              <mat-error *ngIf="parkingLotForm.get('hourly_rate_night')?.hasError('required')">
+                La tarifa nocturna es obligatoria
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="form-row">
+            <mat-form-field appearance="outline">
+              <mat-label>Hora Inicio Día</mat-label>
+              <input matInput type="time" formControlName="day_start_time">
+              <mat-icon matPrefix>schedule</mat-icon>
+              <mat-error *ngIf="parkingLotForm.get('day_start_time')?.hasError('required')">
+                La hora de inicio es obligatoria
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Hora Fin Día</mat-label>
+              <input matInput type="time" formControlName="day_end_time">
+              <mat-icon matPrefix>schedule</mat-icon>
+              <mat-error *ngIf="parkingLotForm.get('day_end_time')?.hasError('required')">
+                La hora de fin es obligatoria
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="form-row">
+            <mat-checkbox formControlName="is_active">
+              Estacionamiento Activo
+            </mat-checkbox>
+          </div>
+
+          <div class="form-actions">
+            <button mat-button type="button" (click)="onCancel()">
+              Cancelar
+            </button>
+            <button mat-raised-button color="primary" type="submit" [disabled]="parkingLotForm.invalid || isLoading">
+              {{ isEditMode ? 'Actualizar' : 'Crear' }}
+            </button>
+          </div>
+        </form>
+      </mat-card-content>
+    </mat-card>
+  }
+</div>
+
+
+
+
+

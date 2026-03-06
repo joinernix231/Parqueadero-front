@@ -1,0 +1,413 @@
+/* Global Styles */
+@use 'sass:color';
+@use './styles/variables' as *;
+@use './styles/mixins' as *;
+@use './styles/typography' as *;
+@use './styles/colors' as *;
+@use './styles/spacing' as *;
+
+// Bootstrap (mantener @import por compatibilidad)
+@import 'bootstrap/scss/bootstrap';
+
+// FontAwesome (mantener @import por compatibilidad)
+@import '@fortawesome/fontawesome-free/scss/fontawesome';
+@import '@fortawesome/fontawesome-free/scss/solid';
+@import '@fortawesome/fontawesome-free/scss/regular';
+@import '@fortawesome/fontawesome-free/scss/brands';
+
+// Angular Material Theme
+@import '@angular/material/prebuilt-themes/indigo-pink.css';
+
+// Snackbar styles
+.success-snackbar {
+  background-color: var(--success-color, #10b981) !important;
+  color: white !important;
+  
+  .mat-mdc-snack-bar-label {
+    color: white !important;
+  }
+  
+  .mat-mdc-button {
+    color: white !important;
+  }
+}
+
+.error-snackbar {
+  background-color: var(--error-color, #ef4444) !important;
+  color: white !important;
+  
+  .mat-mdc-snack-bar-label {
+    color: white !important;
+  }
+  
+  .mat-mdc-button {
+    color: white !important;
+  }
+}
+
+.warning-snackbar {
+  background-color: var(--warning-color, #f59e0b) !important;
+  color: white !important;
+  
+  .mat-mdc-snack-bar-label {
+    color: white !important;
+  }
+  
+  .mat-mdc-button {
+    color: white !important;
+  }
+}
+
+.info-snackbar {
+  background-color: var(--info-color, #3b82f6) !important;
+  color: white !important;
+  
+  .mat-mdc-snack-bar-label {
+    color: white !important;
+  }
+  
+  .mat-mdc-button {
+    color: white !important;
+  }
+}
+
+// Global resets
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: $font-family-base;
+  background-color: var(--background-secondary, #f8fafc);
+  color: var(--text-primary, #0f172a);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+// Utilities
+.container {
+  @include container;
+}
+
+.flex-center {
+  @include flex-center;
+}
+
+.flex-between {
+  @include flex-between;
+}
+
+.flex-column {
+  @include flex-column;
+}
+
+.card {
+  @include card-shadow;
+  background: $background-primary;
+  padding: $spacing-lg;
+}
+
+.btn {
+  padding: $spacing-sm $spacing-md;
+  border-radius: $border-radius-md;
+  border: none;
+  cursor: pointer;
+  font-size: $font-size-base;
+  transition: $transition-fast;
+  font-weight: 500;
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.btn-primary {
+  background-color: $primary-color;
+  color: white;
+
+  &:hover:not(:disabled) {
+    background-color: color.adjust($primary-color, $lightness: -10%);
+  }
+}
+
+.btn-secondary {
+  background-color: $secondary-color;
+  color: white;
+
+  &:hover:not(:disabled) {
+    background-color: color.adjust($secondary-color, $lightness: -10%);
+  }
+}
+
+.btn-success {
+  background-color: $success-color;
+  color: white;
+
+  &:hover:not(:disabled) {
+    background-color: color.adjust($success-color, $lightness: -10%);
+  }
+}
+
+.btn-danger {
+  background-color: $error-color;
+  color: white;
+
+  &:hover:not(:disabled) {
+    background-color: color.adjust($error-color, $lightness: -10%);
+  }
+}
+
+// Loading spinner
+.loading-spinner {
+  @include loading-spinner;
+  width: 40px;
+  height: 40px;
+  margin: 20px auto;
+}
+
+// Form styles - Modern Material Forms
+.form-group {
+  margin-bottom: $spacing-md;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: $spacing-xs;
+  font-weight: 500;
+  color: $text-primary;
+}
+
+.form-control {
+  width: 100%;
+  padding: $spacing-sm $spacing-md;
+  border: $border-width solid $border-color;
+  border-radius: $border-radius-md;
+  font-size: $font-size-base;
+  transition: $transition-fast;
+
+  &:focus {
+    outline: none;
+    border-color: $primary-color;
+    box-shadow: 0 0 0 3px rgba($primary-color, 0.1);
+  }
+
+  &.error {
+    border-color: $error-color;
+  }
+}
+
+.form-error {
+  color: $error-color;
+  font-size: $font-size-sm;
+  margin-top: $spacing-xs;
+}
+
+// Material Form Field Enhancements
+.mat-mdc-form-field {
+  width: 100%;
+  margin-bottom: 1rem;
+  
+  &.mat-form-field-appearance-outline {
+    .mat-mdc-text-field-wrapper {
+      .mat-mdc-form-field-flex {
+        .mat-mdc-form-field-outline {
+          color: var(--sidebar-border, #e2e8f0);
+        }
+      }
+    }
+    
+    &.mat-focused {
+      .mat-mdc-text-field-wrapper {
+        .mat-mdc-form-field-flex {
+          .mat-mdc-form-field-outline {
+            color: var(--primary-color, #6366f1);
+          }
+        }
+      }
+    }
+  }
+  
+  .mat-mdc-form-field-subscript-wrapper {
+    margin-top: 0.5rem;
+  }
+  
+  .mat-mdc-form-field-error {
+    color: var(--error-color, #ef4444);
+    font-size: 0.75rem;
+    margin-top: 0.25rem;
+  }
+  
+  .mat-mdc-form-field-hint {
+    color: var(--text-secondary, #64748b);
+    font-size: 0.75rem;
+  }
+}
+
+// Form layouts
+.form-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--sidebar-border, #e2e8f0);
+}
+
+.full-width {
+  width: 100%;
+}
+
+// Card form container
+.form-container {
+  max-width: 800px;
+  margin: 0 auto;
+  
+  mat-card {
+    border: 1px solid var(--sidebar-border, #e2e8f0);
+    box-shadow: var(--shadow-sm, 0 1px 2px 0 rgba(0, 0, 0, 0.05));
+    border-radius: var(--radius-lg, 1rem);
+    
+    mat-card-content {
+      padding: 2rem;
+    }
+  }
+}
+
+// Table styles - Modern Material Table
+.mat-mdc-table {
+  background: var(--background-primary, #ffffff);
+  border-radius: var(--radius-lg, 1rem);
+  overflow: hidden;
+  border: 1px solid var(--sidebar-border, #e2e8f0);
+  box-shadow: var(--shadow-sm, 0 1px 2px 0 rgba(0, 0, 0, 0.05));
+}
+
+.mat-mdc-header-row {
+  background-color: var(--background-secondary, #f8fafc) !important;
+  
+  th {
+    font-weight: 600;
+    color: var(--text-primary, #0f172a);
+    font-size: 0.8125rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 1rem !important;
+    border-bottom: 1px solid var(--sidebar-border, #e2e8f0);
+  }
+}
+
+.mat-mdc-row {
+  transition: background-color 0.2s ease;
+  border-bottom: 1px solid var(--sidebar-border, #e2e8f0);
+  
+  &:hover {
+    background-color: var(--background-secondary, #f8fafc) !important;
+  }
+  
+  &:last-child {
+    border-bottom: none;
+  }
+  
+  td {
+    padding: 1rem !important;
+    color: var(--text-secondary, #64748b);
+    font-size: 0.9375rem;
+  }
+}
+
+// Empty states
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  text-align: center;
+  color: var(--text-secondary, #64748b);
+
+  mat-icon {
+    font-size: 4rem;
+    width: 4rem;
+    height: 4rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+    color: var(--text-tertiary, #94a3b8);
+  }
+
+  h3 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--text-primary, #0f172a);
+    margin: 0 0 0.5rem 0;
+  }
+
+  p {
+    font-size: 0.9375rem;
+    margin: 0;
+    color: var(--text-secondary, #64748b);
+  }
+}
+
+// Badge styles
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.375rem 0.75rem;
+  border-radius: var(--radius-full, 9999px);
+  font-size: 0.8125rem;
+  font-weight: 500;
+
+  &.badge-primary {
+    background-color: var(--sidebar-active, #eef2ff);
+    color: var(--sidebar-text-active, #6366f1);
+  }
+
+  &.badge-success {
+    background-color: #d1fae5;
+    color: var(--success-color, #10b981);
+  }
+
+  &.badge-warning {
+    background-color: #fef3c7;
+    color: var(--warning-color, #f59e0b);
+  }
+
+  &.badge-error {
+    background-color: #fee2e2;
+    color: var(--error-color, #ef4444);
+  }
+
+  &.badge-info {
+    background-color: #dbeafe;
+    color: var(--info-color, #3b82f6);
+  }
+}
+
+// Responsive utilities
+.hide-mobile {
+  @include responsive(md) {
+    display: block;
+  }
+  display: none;
+}
+
+.show-mobile {
+  @include responsive(md) {
+    display: none;
+  }
+  display: block;
+}
+

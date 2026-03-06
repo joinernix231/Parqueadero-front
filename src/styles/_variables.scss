@@ -1,0 +1,93 @@
+// Variables globales SCSS - Modern SaaS Theme
+
+// Colores principales (Modern Blue Palette)
+$primary-color: #6366f1; // Indigo moderno
+$primary-hover: #4f46e5;
+$primary-light: #818cf8;
+$primary-dark: #4338ca;
+
+$secondary-color: #64748b; // Slate
+$accent-color: #8b5cf6; // Purple
+$success-color: #10b981; // Emerald
+$warning-color: #f59e0b; // Amber
+$error-color: #ef4444; // Red
+$info-color: #3b82f6; // Blue
+
+// Colores de texto
+$text-primary: #0f172a; // Slate 900
+$text-secondary: #64748b; // Slate 500
+$text-tertiary: #94a3b8; // Slate 400
+$text-disabled: #cbd5e1; // Slate 300
+$text-inverse: #ffffff;
+
+// Colores de fondo
+$background-primary: #ffffff;
+$background-secondary: #f8fafc; // Slate 50
+$background-tertiary: #f1f5f9; // Slate 100
+$background-dark: #1e293b; // Slate 800
+$background-darker: #0f172a; // Slate 900
+
+// Sidebar colors
+$sidebar-bg: #ffffff;
+$sidebar-hover: #f1f5f9;
+$sidebar-active: #eef2ff; // Indigo 50
+$sidebar-border: #e2e8f0;
+$sidebar-text: #475569;
+$sidebar-text-active: #6366f1;
+
+// Espaciado
+$spacing-xs: 0.25rem;
+$spacing-sm: 0.5rem;
+$spacing-md: 1rem;
+$spacing-lg: 1.5rem;
+$spacing-xl: 2rem;
+$spacing-xxl: 3rem;
+
+// Breakpoints
+$breakpoint-xs: 0;
+$breakpoint-sm: 576px;
+$breakpoint-md: 768px;
+$breakpoint-lg: 992px;
+$breakpoint-xl: 1200px;
+$breakpoint-xxl: 1400px;
+
+// Tipografía
+$font-family-base: 'Roboto', 'Helvetica Neue', sans-serif;
+$font-size-base: 1rem;
+$font-size-sm: 0.875rem;
+$font-size-lg: 1.125rem;
+$font-size-xl: 1.25rem;
+$font-size-xxl: 1.5rem;
+
+// Bordes
+$border-radius-sm: 0.25rem;
+$border-radius-md: 0.5rem;
+$border-radius-lg: 1rem;
+$border-width: 1px;
+$border-color: #e0e0e0;
+
+// Sombras (Modern soft shadows)
+$shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+$shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+$shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+$shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+$shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+$shadow-inner: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06);
+
+// Transiciones
+$transition-base: all 0.3s ease;
+$transition-fast: all 0.15s ease;
+$transition-slow: all 0.5s ease;
+
+// Z-index
+$z-index-dropdown: 1000;
+$z-index-sticky: 1020;
+$z-index-fixed: 1030;
+$z-index-modal-backdrop: 1040;
+$z-index-modal: 1050;
+$z-index-popover: 1060;
+$z-index-tooltip: 1070;
+
+
+
+

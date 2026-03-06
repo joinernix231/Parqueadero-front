@@ -1,0 +1,92 @@
+// Paleta de colores - Modern SaaS Theme
+@use './variables' as *;
+
+:root {
+  // Primary colors
+  --primary-color: #{$primary-color};
+  --primary-hover: #{$primary-hover};
+  --primary-light: #{$primary-light};
+  --primary-dark: #{$primary-dark};
+  
+  --secondary-color: #{$secondary-color};
+  --accent-color: #{$accent-color};
+  --success-color: #{$success-color};
+  --warning-color: #{$warning-color};
+  --error-color: #{$error-color};
+  --info-color: #{$info-color};
+  
+  // Text colors
+  --text-primary: #{$text-primary};
+  --text-secondary: #{$text-secondary};
+  --text-tertiary: #{$text-tertiary};
+  --text-disabled: #{$text-disabled};
+  --text-inverse: #{$text-inverse};
+  
+  // Background colors
+  --background-primary: #{$background-primary};
+  --background-secondary: #{$background-secondary};
+  --background-tertiary: #{$background-tertiary};
+  --background-dark: #{$background-dark};
+  --background-darker: #{$background-darker};
+  
+  // Sidebar colors (light mode - dark sidebar)
+  --sidebar-bg: #1e293b;
+  --sidebar-hover: rgba(255, 255, 255, 0.1);
+  --sidebar-active: #{$primary-color};
+  --sidebar-border: #334155;
+  --sidebar-text: #cbd5e1;
+  --sidebar-text-active: #ffffff;
+  
+  // Shadows
+  --shadow-sm: #{$shadow-sm};
+  --shadow-md: #{$shadow-md};
+  --shadow-lg: #{$shadow-lg};
+  --shadow-xl: #{$shadow-xl};
+  --shadow-2xl: #{$shadow-2xl};
+  
+  // Border radius
+  --radius-sm: #{$border-radius-sm};
+  --radius-md: #{$border-radius-md};
+  --radius-lg: #{$border-radius-lg};
+  --radius-xl: 1.5rem;
+  --radius-full: 9999px;
+}
+
+.bg-primary {
+  background-color: $primary-color;
+  color: white;
+}
+
+.bg-secondary {
+  background-color: $secondary-color;
+  color: white;
+}
+
+.bg-success {
+  background-color: $success-color;
+  color: white;
+}
+
+.bg-warning {
+  background-color: $warning-color;
+  color: white;
+}
+
+.bg-error {
+  background-color: $error-color;
+  color: white;
+}
+
+.bg-info {
+  background-color: $info-color;
+  color: white;
+}
+
+.bg-light {
+  background-color: $background-secondary;
+}
+
+.bg-dark {
+  background-color: $background-dark;
+  color: white;
+}

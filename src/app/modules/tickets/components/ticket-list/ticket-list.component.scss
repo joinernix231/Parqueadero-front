@@ -1,0 +1,393 @@
+@use '../../../../../styles/variables' as *;
+@use 'sass:color';
+
+.ticket-list-container {
+  padding: $spacing-xl;
+  background: $background-secondary;
+  min-height: calc(100vh - 64px);
+}
+
+.header-section {
+  margin-bottom: $spacing-xl;
+  
+  .title-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: $spacing-lg;
+    gap: $spacing-lg;
+    flex-wrap: wrap;
+  }
+  
+  .page-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text-primary, #0f172a);
+    margin: 0;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+  }
+
+  .view-mode-toggle {
+    border-radius: var(--radius-full, 9999px);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm, 0 1px 2px 0 rgba(0, 0, 0, 0.05));
+    border: 1px solid var(--sidebar-border, #e2e8f0);
+    background: var(--background-primary, #ffffff);
+    
+    ::ng-deep {
+      .mat-button-toggle {
+        border: none;
+        background: transparent;
+        color: var(--text-secondary, #64748b);
+        font-weight: 600;
+        font-size: 0.875rem;
+        padding: 0.625rem 1.25rem;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        
+        mat-icon {
+          font-size: 1.125rem;
+          width: 1.125rem;
+          height: 1.125rem;
+        }
+        
+        &:hover:not(.mat-button-toggle-checked) {
+          background: var(--background-secondary, #f8fafc);
+          color: var(--text-primary, #0f172a);
+        }
+        
+        &.mat-button-toggle-checked {
+          background: linear-gradient(135deg, var(--primary-color, #6366f1) 0%, var(--primary-light, #818cf8) 100%);
+          color: white;
+          box-shadow: var(--shadow-md, 0 4px 6px -1px rgba(0, 0, 0, 0.1));
+          
+          mat-icon {
+            color: white;
+          }
+        }
+      }
+    }
+  }
+}
+
+.actions-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: $spacing-md;
+  flex-wrap: wrap;
+  background: var(--background-primary, #ffffff);
+  padding: $spacing-md;
+  border-radius: var(--radius-md, 0.5rem);
+  box-shadow: var(--shadow-sm, 0 1px 2px 0 rgba(0, 0, 0, 0.05));
+  border: 1px solid var(--sidebar-border, #e2e8f0);
+  
+  .search-container {
+    flex: 1;
+    min-width: 300px;
+    max-width: 500px;
+    
+    .search-field {
+      width: 100%;
+      
+      ::ng-deep {
+        .mat-mdc-form-field-subscript-wrapper {
+          display: none;
+        }
+        
+        .mat-mdc-text-field-wrapper {
+          .mat-mdc-form-field-flex {
+            .mat-mdc-form-field-input-control {
+              input {
+                color: var(--text-primary, #0f172a);
+                font-size: 0.9375rem;
+                font-weight: 500;
+                
+                &::placeholder {
+                  color: var(--text-tertiary, #94a3b8);
+                  opacity: 0.7;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  
+  .action-buttons {
+    display: flex;
+    gap: $spacing-sm;
+    
+    .action-btn {
+      white-space: nowrap;
+      border-radius: var(--radius-md, 0.5rem);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 0.625rem 1.25rem;
+      font-size: 0.875rem;
+      line-height: 1.4;
+      
+      mat-icon {
+        margin-right: 0.5rem;
+        font-size: 1.125rem;
+        width: 1.125rem;
+        height: 1.125rem;
+      }
+      
+      &.primary-btn {
+        background-color: var(--primary-color, #6366f1);
+        color: white;
+        box-shadow: var(--shadow-md, 0 4px 6px -1px rgba(0, 0, 0, 0.1));
+        
+        &:hover {
+          background-color: var(--primary-hover, #4f46e5);
+          box-shadow: var(--shadow-lg, 0 10px 15px -3px rgba(0, 0, 0, 0.1));
+        }
+      }
+    }
+  }
+}
+
+.table-section {
+  background: var(--background-primary, #ffffff);
+  border-radius: var(--radius-lg, 1rem);
+  padding: 0;
+  box-shadow: var(--shadow-sm, 0 1px 2px 0 rgba(0, 0, 0, 0.05));
+  border: 1px solid var(--sidebar-border, #e2e8f0);
+  overflow: hidden;
+}
+
+.tickets-table {
+  width: 100%;
+  
+  ::ng-deep {
+    thead {
+      background-color: var(--background-secondary, #f8fafc);
+      border-bottom: 2px solid var(--sidebar-border, #e2e8f0);
+      
+      th {
+        color: var(--text-primary, #0f172a);
+        font-weight: 700;
+        font-size: 0.8125rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        padding: 1.25rem 1.5rem;
+        border-bottom: 2px solid var(--sidebar-border, #e2e8f0);
+      }
+    }
+    
+    tbody {
+      tr {
+        transition: background-color 0.2s ease;
+        border-bottom: 1px solid var(--sidebar-border, #e2e8f0);
+        
+        &:nth-child(even) {
+          background-color: var(--background-secondary, #f8fafc);
+        }
+        
+        &:hover {
+          background-color: var(--background-tertiary, #f1f5f9) !important;
+        }
+        
+        &:last-child {
+          border-bottom: none;
+        }
+      }
+      
+      td {
+        padding: 1.25rem 1.5rem;
+        color: var(--text-primary, #0f172a);
+        font-size: 0.9375rem;
+        font-weight: 500;
+        line-height: 1.6;
+        
+        // Asegurar buen contraste en todas las celdas
+        * {
+          color: inherit;
+        }
+      }
+    }
+  }
+}
+
+.vehicle-cell {
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+  
+  .vehicle-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #9c27b0, #e91e63);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    flex-shrink: 0;
+    box-shadow: $shadow-sm;
+    
+    mat-icon {
+      font-size: 28px;
+      width: 28px;
+      height: 28px;
+    }
+  }
+  
+  .vehicle-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    
+    .vehicle-name {
+      font-weight: 600;
+      color: var(--text-primary, #0f172a);
+      font-size: 0.9375rem;
+      line-height: 1.4;
+    }
+    
+    .vehicle-type {
+      font-size: 0.8125rem;
+      color: var(--text-secondary, #64748b);
+      text-transform: capitalize;
+      font-weight: 500;
+      line-height: 1.4;
+    }
+  }
+}
+
+.plate-badge {
+  display: inline-block;
+  padding: 0.375rem 0.75rem;
+  background: var(--sidebar-active, #eef2ff);
+  border-radius: var(--radius-full, 9999px);
+  font-weight: 700;
+  font-family: 'Courier New', monospace;
+  color: var(--sidebar-text-active, #6366f1);
+  border: 1px solid rgba(99, 102, 241, 0.3);
+  font-size: 0.875rem;
+  letter-spacing: 0.05em;
+  line-height: 1.4;
+}
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.375rem 0.75rem;
+  border-radius: var(--radius-full, 9999px);
+  font-weight: 600;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  line-height: 1.4;
+  
+  &.status-active {
+    background: #d1fae5;
+    color: var(--success-color, #10b981);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+  }
+  
+  &.status-finished {
+    background: var(--background-tertiary, #f1f5f9);
+    color: var(--text-secondary, #64748b);
+    border: 1px solid var(--sidebar-border, #e2e8f0);
+  }
+
+  &.status-paid {
+    background: #d1fae5;
+    color: var(--success-color, #10b981);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+  }
+
+  &.status-pending-payment {
+    background: #fee2e2;
+    color: var(--error-color, #ef4444);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+  }
+}
+
+.action-buttons-cell {
+  display: flex;
+  gap: $spacing-xs;
+  justify-content: flex-end;
+  
+  button {
+    transition: all 0.2s ease;
+    
+    &:hover {
+      transform: scale(1.1);
+    }
+    
+    mat-icon {
+      font-size: 22px;
+      width: 22px;
+      height: 22px;
+    }
+  }
+}
+
+.empty-state-message {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: var(--text-secondary, #64748b);
+
+  mat-icon {
+    font-size: 4rem;
+    width: 4rem;
+    height: 4rem;
+    color: var(--text-tertiary, #94a3b8);
+    margin-bottom: 1rem;
+    opacity: 0.5;
+  }
+
+  p {
+    font-size: 1rem;
+    font-weight: 500;
+    margin: 0;
+    color: var(--text-primary, #0f172a);
+  }
+}
+
+.no-exit {
+  color: var(--text-tertiary, #94a3b8);
+  font-style: italic;
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .header-section {
+    .title-row {
+      flex-direction: column;
+      align-items: stretch;
+      
+      .view-mode-toggle {
+        width: 100%;
+        
+        ::ng-deep {
+          .mat-button-toggle {
+            flex: 1;
+          }
+        }
+      }
+    }
+  }
+
+  .actions-bar {
+    flex-direction: column;
+    
+    .search-container {
+      width: 100%;
+    }
+    
+    .action-buttons {
+      width: 100%;
+      justify-content: flex-end;
+    }
+  }
+}
+

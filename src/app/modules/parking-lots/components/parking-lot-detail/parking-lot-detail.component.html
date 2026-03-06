@@ -1,0 +1,84 @@
+<div class="parking-lot-detail-container">
+  @if (isLoading) {
+    <app-loading-spinner message="Cargando detalles del estacionamiento..."></app-loading-spinner>
+  } @else if (parkingLot) {
+    <div class="header-actions">
+      <h1 class="page-title">{{ parkingLot.name }}</h1>
+      <div class="actions">
+        <a mat-raised-button color="primary" [routerLink]="['/parking-lots', parkingLot.id, 'edit']">
+          <mat-icon>edit</mat-icon>
+          Editar
+        </a>
+      </div>
+    </div>
+
+    <div class="detail-grid">
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>Información General</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="detail-item">
+            <span class="label">Nombre:</span>
+            <span class="value">{{ parkingLot.name }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="label">Dirección:</span>
+            <span class="value">{{ parkingLot.address }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="label">Estado:</span>
+            <mat-chip [class.active]="parkingLot.is_active">
+              {{ parkingLot.is_active ? 'Activo' : 'Inactivo' }}
+            </mat-chip>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>Capacidad</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="detail-item">
+            <span class="label">Espacios Totales:</span>
+            <span class="value">{{ parkingLot.total_spots }}</span>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>Tarifas</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="detail-item">
+            <span class="label">Tarifa Día:</span>
+            <span class="value">${{ parkingLot.hourly_rate_day }}/hora</span>
+          </div>
+          <div class="detail-item">
+            <span class="label">Tarifa Noche:</span>
+            <span class="value">${{ parkingLot.hourly_rate_night }}/hora</span>
+          </div>
+          <div class="detail-item">
+            <span class="label">Horario Día:</span>
+            <span class="value">{{ parkingLot.day_start_time }} - {{ parkingLot.day_end_time }}</span>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  } @else {
+    <div class="not-found">
+      <mat-icon>error_outline</mat-icon>
+      <p>Estacionamiento no encontrado</p>
+      <a mat-raised-button color="primary" routerLink="/parking-lots">
+        Volver a la lista
+      </a>
+    </div>
+  }
+</div>
+
+
+
+
+

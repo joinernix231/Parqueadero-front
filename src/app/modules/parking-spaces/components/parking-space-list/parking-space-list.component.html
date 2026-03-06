@@ -1,0 +1,62 @@
+<div class="parking-space-list-container">
+  <h1 class="page-title">Espacios de Estacionamiento</h1>
+
+  <mat-card class="filter-card">
+    <mat-card-content>
+      <form [formGroup]="filterForm" class="filter-form">
+        <mat-form-field appearance="outline">
+          <mat-label>Seleccionar Estacionamiento</mat-label>
+          <mat-select formControlName="parking_lot_id">
+            <mat-option [value]="null">Todos</mat-option>
+            @for (lot of parkingLots; track lot.id) {
+              <mat-option [value]="lot.id">{{ lot.name }}</mat-option>
+            }
+          </mat-select>
+          <mat-icon matPrefix>local_parking</mat-icon>
+        </mat-form-field>
+
+        <button mat-raised-button color="primary" type="button" (click)="onRefresh()" [disabled]="!filterForm.get('parking_lot_id')?.value">
+          <mat-icon>refresh</mat-icon>
+          Actualizar
+        </button>
+      </form>
+    </mat-card-content>
+  </mat-card>
+
+  @if (isLoading) {
+    <app-loading-spinner message="Cargando espacios disponibles..."></app-loading-spinner>
+  } @else if (availableSpots.length > 0) {
+    <div class="spots-grid">
+      @for (spot of availableSpots; track spot.id) {
+        <mat-card class="spot-card" [class.available]="spot.is_available">
+          <mat-card-content>
+            <div class="spot-header">
+              <h3>{{ spot.spot_number }}</h3>
+              <mat-chip [class]="spot.is_available ? 'available-chip' : 'occupied-chip'">
+                {{ spot.is_available ? 'Disponible' : 'Ocupado' }}
+              </mat-chip>
+            </div>
+            <div class="spot-details">
+              <p><strong>Tipo:</strong> {{ spot.spot_type }}</p>
+              <p><strong>Estado:</strong> {{ spot.is_active ? 'Activo' : 'Inactivo' }}</p>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      }
+    </div>
+  } @else {
+    <mat-card>
+      <mat-card-content>
+        <div class="empty-state">
+          <mat-icon>space_dashboard</mat-icon>
+          <p>No hay espacios disponibles o no se ha seleccionado un estacionamiento</p>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  }
+</div>
+
+
+
+
+

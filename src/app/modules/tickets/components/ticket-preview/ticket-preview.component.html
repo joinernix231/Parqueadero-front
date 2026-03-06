@@ -1,0 +1,78 @@
+@if (ticket) {
+  <mat-card class="ticket-preview-card">
+    <mat-card-content>
+      <div class="ticket-header">
+        <h3>Información del Ticket</h3>
+        <span class="ticket-id">#{{ ticket.id }}</span>
+      </div>
+
+      <div class="ticket-section">
+        <div class="section-title">
+          <mat-icon>directions_car</mat-icon>
+          <span>Vehículo</span>
+        </div>
+        <div class="info-grid">
+          <div class="info-item">
+            <span class="label">Placa:</span>
+            <span class="value">{{ ticket.vehicle?.plate || 'N/A' }}</span>
+          </div>
+          <div class="info-item">
+            <span class="label">Propietario:</span>
+            <span class="value">{{ ticket.vehicle?.owner_name || 'N/A' }}</span>
+          </div>
+          <div class="info-item">
+            <span class="label">Tipo:</span>
+            <span class="value">{{ vehicleTypeLabel }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="ticket-section">
+        <div class="section-title">
+          <mat-icon>schedule</mat-icon>
+          <span>Tiempo de Estacionamiento</span>
+        </div>
+        <div class="info-grid">
+          <div class="info-item">
+            <span class="label">Hora de Entrada:</span>
+            <span class="value">{{ formattedEntryTime }}</span>
+          </div>
+          <div class="info-item">
+            <span class="label">Tiempo Transcurrido:</span>
+            <span class="value highlight">{{ elapsedTime }}</span>
+          </div>
+          @if (priceCalculation) {
+            <div class="info-item">
+              <span class="label">Horas Totales:</span>
+              <span class="value">{{ formatHoursMinutes(priceCalculation.total_hours) }}</span>
+            </div>
+          }
+        </div>
+      </div>
+
+      @if (priceCalculation) {
+        <div class="ticket-section price-section">
+          <div class="section-title">
+            <mat-icon>attach_money</mat-icon>
+            <span>Detalle de Cobro</span>
+          </div>
+          <div class="price-details">
+            <div class="price-row">
+              <span class="label">Tarifa por Hora:</span>
+              <span class="value">${{ priceCalculation.hourly_rate_applied.toFixed(2) }}</span>
+            </div>
+            <div class="price-row">
+              <span class="label">Horas Estacionado:</span>
+              <span class="value">{{ formatHoursMinutes(priceCalculation.total_hours) }}</span>
+            </div>
+            <div class="price-row total">
+              <span class="label">TOTAL A PAGAR:</span>
+              <span class="value">${{ priceCalculation.total_amount.toFixed(2) }}</span>
+            </div>
+          </div>
+        </div>
+      }
+    </mat-card-content>
+  </mat-card>
+}
+

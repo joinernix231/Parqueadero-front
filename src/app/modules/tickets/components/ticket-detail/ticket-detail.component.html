@@ -1,0 +1,261 @@
+<div class="ticket-detail-container">
+  <div class="page-header">
+    <button mat-icon-button (click)="goBack()" class="back-button">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <div class="header-content">
+      <h1 class="page-title">Detalle del Ticket</h1>
+      <p class="page-subtitle">Información completa del ticket de estacionamiento</p>
+    </div>
+  </div>
+
+  @if (isLoading()) {
+    <app-loading-spinner message="Cargando detalles del ticket..."></app-loading-spinner>
+  } @else if (ticket()) {
+    <div class="detail-content">
+      <!-- Ticket Header Card -->
+      <mat-card class="ticket-header-card">
+        <mat-card-content>
+          <div class="ticket-header">
+            <div class="ticket-number-section">
+              <div class="ticket-icon-wrapper">
+                <mat-icon class="ticket-icon">receipt_long</mat-icon>
+              </div>
+              <div class="ticket-info">
+                <span class="ticket-label">Ticket</span>
+                <span class="ticket-number">#{{ ticket()!.id }}</span>
+              </div>
+            </div>
+            <mat-chip [class]="ticket()!.is_active ? 'status-chip status-active' : 'status-chip status-finished'">
+              <mat-icon>{{ ticket()!.is_active ? 'check_circle' : 'done_all' }}</mat-icon>
+              <span>{{ ticket()!.is_active ? 'Activo' : 'Finalizado' }}</span>
+            </mat-chip>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Main Info Cards Grid -->
+      <div class="info-cards-grid">
+        <!-- Vehicle Card -->
+        <mat-card class="info-card">
+          <mat-card-header>
+            <div class="card-header-content">
+              <div class="card-icon-wrapper vehicle">
+                <mat-icon>directions_car</mat-icon>
+              </div>
+              <div>
+                <mat-card-title>Vehículo</mat-card-title>
+                <mat-card-subtitle>Información del vehículo</mat-card-subtitle>
+              </div>
+            </div>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="card-value">
+              <div class="value-primary">{{ ticket()!.vehicle?.owner_name || 'N/A' }}</div>
+              <div class="value-secondary">
+                <mat-icon class="small-icon">{{ ticket()!.vehicle?.vehicle_type === 'motorcycle' ? 'two_wheeler' : 'directions_car' }}</mat-icon>
+                {{ ticket()!.vehicle?.plate || 'N/A' }}
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <!-- Parking Lot Card -->
+        <mat-card class="info-card">
+          <mat-card-header>
+            <div class="card-header-content">
+              <div class="card-icon-wrapper parking">
+                <mat-icon>local_parking</mat-icon>
+              </div>
+              <div>
+                <mat-card-title>Estacionamiento</mat-card-title>
+                <mat-card-subtitle>Ubicación del vehículo</mat-card-subtitle>
+              </div>
+            </div>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="card-value">
+              <div class="value-primary">{{ ticket()!.parking_lot?.name || 'N/A' }}</div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <!-- Entry Time Card -->
+        <mat-card class="info-card">
+          <mat-card-header>
+            <div class="card-header-content">
+              <div class="card-icon-wrapper time">
+                <mat-icon>schedule</mat-icon>
+              </div>
+              <div>
+                <mat-card-title>Hora de Entrada</mat-card-title>
+                <mat-card-subtitle>Fecha y hora de ingreso</mat-card-subtitle>
+              </div>
+            </div>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="card-value">
+              <div class="value-primary">{{ formatDate(ticket()!.entry_time) }}</div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <!-- Exit Time Card (if exists) -->
+        @if (ticket()!.exit_time) {
+          <mat-card class="info-card">
+            <mat-card-header>
+              <div class="card-header-content">
+                <div class="card-icon-wrapper time">
+                  <mat-icon>exit_to_app</mat-icon>
+                </div>
+                <div>
+                  <mat-card-title>Hora de Salida</mat-card-title>
+                  <mat-card-subtitle>Fecha y hora de salida</mat-card-subtitle>
+                </div>
+              </div>
+            </mat-card-header>
+            <mat-card-content>
+              <div class="card-value">
+                <div class="value-primary">{{ formatDate(ticket()!.exit_time) }}</div>
+              </div>
+            </mat-card-content>
+          </mat-card>
+        }
+
+        <!-- Total Hours Card (if exists) -->
+        @if (ticket()!.total_hours) {
+          <mat-card class="info-card">
+            <mat-card-header>
+              <div class="card-header-content">
+                <div class="card-icon-wrapper hours">
+                  <mat-icon>access_time</mat-icon>
+                </div>
+                <div>
+                  <mat-card-title>Tiempo Total</mat-card-title>
+                  <mat-card-subtitle>Duración del estacionamiento</mat-card-subtitle>
+                </div>
+              </div>
+            </mat-card-header>
+            <mat-card-content>
+              <div class="card-value">
+                <div class="value-primary">{{ formatHoursMinutes(ticket()!.total_hours) }}</div>
+              </div>
+            </mat-card-content>
+          </mat-card>
+        }
+
+        <!-- Total Amount Card (if exists) -->
+        @if (ticket()!.total_amount) {
+          <mat-card class="info-card amount-card">
+            <mat-card-header>
+              <div class="card-header-content">
+                <div class="card-icon-wrapper amount">
+                  <mat-icon>attach_money</mat-icon>
+                </div>
+                <div>
+                  <mat-card-title>Monto Total</mat-card-title>
+                  <mat-card-subtitle>Pago realizado</mat-card-subtitle>
+                </div>
+              </div>
+            </mat-card-header>
+            <mat-card-content>
+              <div class="card-value">
+                <div class="value-primary amount-value">${{ ticket()!.total_amount | number:'1.2-2' }}</div>
+              </div>
+            </mat-card-content>
+          </mat-card>
+        }
+      </div>
+
+      <!-- Precio Estimado (si está activo) -->
+      @if (ticket()!.is_active && calculatedPrice()) {
+        <mat-card class="price-estimate-card">
+          <mat-card-header>
+            <div class="card-header-content">
+              <div class="card-icon-wrapper calculate">
+                <mat-icon>calculate</mat-icon>
+              </div>
+              <div>
+                <mat-card-title>Precio Estimado</mat-card-title>
+                <mat-card-subtitle>Cálculo basado en el tiempo transcurrido</mat-card-subtitle>
+              </div>
+            </div>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="price-breakdown">
+              <div class="price-row">
+                <div class="price-label-group">
+                  <mat-icon class="price-icon">access_time</mat-icon>
+                  <span class="price-label">Horas transcurridas</span>
+                </div>
+                <span class="price-value">{{ formatHoursMinutes(calculatedPrice()!.total_hours) }}</span>
+              </div>
+              
+              <div class="price-row">
+                <div class="price-label-group">
+                  <mat-icon class="price-icon">attach_money</mat-icon>
+                  <span class="price-label">Tarifa por hora</span>
+                </div>
+                <span class="price-value">${{ calculatedPrice()!.hourly_rate_applied | number:'1.2-2' }}</span>
+              </div>
+              
+              <mat-divider class="price-divider"></mat-divider>
+              
+              <div class="price-row total-row">
+                <div class="price-label-group">
+                  <mat-icon class="price-icon total-icon">payments</mat-icon>
+                  <span class="price-label total-label">Total estimado</span>
+                </div>
+                <span class="price-value total-price">${{ calculatedPrice()!.total_amount | number:'1.2-2' }}</span>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      }
+
+      <!-- Action Buttons -->
+      <div class="actions-section">
+        <div class="action-buttons-group">
+          <button 
+            mat-raised-button 
+            color="primary" 
+            (click)="downloadEntryReceipt()"
+            class="action-button download-button"
+          >
+            <mat-icon>download</mat-icon>
+            <span>Descargar Recibo Entrada</span>
+          </button>
+
+          @if (!ticket()!.is_active) {
+            <button 
+              mat-raised-button 
+              color="accent" 
+              (click)="downloadExitReceipt()"
+              class="action-button download-button"
+            >
+              <mat-icon>download</mat-icon>
+              <span>Descargar Recibo Salida</span>
+            </button>
+          }
+        </div>
+
+        @if (ticket()!.is_active) {
+          <button 
+            mat-raised-button 
+            color="warn" 
+            (click)="registerExit()"
+            [disabled]="ticketState.loading()"
+            class="exit-button"
+          >
+            <mat-icon>exit_to_app</mat-icon>
+            <span>Registrar Salida</span>
+            @if (ticketState.loading()) {
+              <mat-progress-spinner diameter="20" mode="indeterminate" class="button-spinner"></mat-progress-spinner>
+            }
+          </button>
+        }
+      </div>
+    </div>
+  }
+</div>
+
