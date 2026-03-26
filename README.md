@@ -1,59 +1,125 @@
-# ParkingManagementFrontend
+# Parking Management Frontend
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.1.
+Frontend profesional para un sistema de gestión de parqueadero, construido con Angular y conectado a una API REST en Laravel.
 
-## Development server
+Su objetivo es operar flujos reales: ingreso/salida de vehículos, historial de tickets, panel administrativo y reportes.
 
-To start a local development server, run:
+---
 
-```bash
-ng serve
+## Qué resuelve
+
+- Control operativo diario de entradas y salidas.
+- Visualización de ocupación e ingresos.
+- Gestión de catálogos (vehículos, estacionamientos, espacios).
+- Reportes con filtros y exportación.
+- Autenticación con token y rutas protegidas.
+
+---
+
+## Stack
+
+- Angular 21 (standalone components)
+- TypeScript
+- RxJS
+- Angular Material + Bootstrap
+- ngx-echarts (dashboard)
+
+Backend esperado:
+
+- Laravel API (`/api`)
+- Auth por Bearer token
+
+---
+
+## Arquitectura (simple y escalable)
+
+```txt
+src/app/
+  core/        # auth, interceptors, guards, api client base
+  shared/      # componentes reutilizables, servicios transversales, utilidades
+  features/    # routing por dominio (auth, dashboard, tickets, vehicles, etc.)
+  modules/     # implementación actual de pantallas por dominio (migración incremental)
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+### Principios aplicados
 
-## Code scaffolding
+- Lógica de negocio en servicios/presenters, no en templates.
+- Consumo HTTP centralizado (`ApiClient` + `BaseApiService`).
+- Manejo global de auth y errores con interceptores.
+- Lazy loading por dominio para mejorar escalabilidad.
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+---
 
-```bash
-ng generate component component-name
-```
+## Flujos principales
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+- **Auth:** login, persistencia de sesión, logout y protección de rutas.
+- **Tickets:** vista activa/historial, búsqueda, detalle, entrada/salida.
+- **Dashboard:** métricas y gráficos de ocupación/ingresos.
+- **Reportes:** filtros por rango/estado/placa y exportación.
 
-```bash
-ng generate --help
-```
+---
 
-## Building
+## Ejecutar en local
 
-To build the project run:
+### 1) Backend (Laravel)
 
-```bash
-ng build
-```
+Asegura que la API esté levantada y accesible. Ejemplo local:
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+- `http://localhost:8080/api`
 
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+### 2) Frontend
 
 ```bash
-ng test
+cd parking-management-frontend
+npm install
+npm start
 ```
 
-## Running end-to-end tests
+App en:
 
-For end-to-end (e2e) testing, run:
+- `http://localhost:4200`
+
+---
+
+## Configuración de entorno
+
+Editar:
+
+- `src/environments/environment.ts`
+- `src/environments/environment.prod.ts`
+
+Ajusta:
+
+- `apiUrl`: URL base de la API Laravel
+- `timezone`: zona horaria de la app
+
+---
+
+## Build de producción
 
 ```bash
-ng e2e
+npm run build
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+La salida se genera en `dist/`.
 
-## Additional Resources
+---
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+## Screenshots
+
+Agrega aquí capturas reales del producto:
+
+- Dashboard
+- Lista de tickets
+- Formulario de ingreso
+- Reportes
+
+---
+
+## Enfoque de producto
+
+Este proyecto está estructurado para escenarios reales de cliente:
+
+- Código mantenible para equipos pequeños/medianos.
+- Arquitectura incremental (evita reescrituras costosas).
+- Base lista para extender con módulos como pagos, multi-sede y auditoría.
