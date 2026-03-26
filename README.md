@@ -1,18 +1,53 @@
 # Parking Management Frontend
 
-Frontend profesional para un sistema de gestión de parqueadero, construido con Angular y conectado a una API REST en Laravel.
+A frontend built for real parking operations: vehicle check-in/check-out, occupancy tracking, ticket history, and reporting.
 
-Su objetivo es operar flujos reales: ingreso/salida de vehículos, historial de tickets, panel administrativo y reportes.
+This is not a classroom CRUD demo. It is designed around real daily workflows where operators need speed, clarity, and reliable data.
 
 ---
 
-## Qué resuelve
+## Quick Overview
 
-- Control operativo diario de entradas y salidas.
-- Visualización de ocupación e ingresos.
-- Gestión de catálogos (vehículos, estacionamientos, espacios).
-- Reportes con filtros y exportación.
-- Autenticación con token y rutas protegidas.
+This app helps teams:
+
+- register entries and exits without friction,
+- track active tickets in real time,
+- keep a clean ticket history,
+- and monitor operations from a practical dashboard.
+
+---
+
+## What Problem It Solves
+
+Many parking operations still rely on paper, spreadsheets, or disconnected tools.  
+That usually creates billing mistakes, delays at exit, and weak traceability.
+
+This frontend centralizes the workflow so teams can work faster and with fewer errors.
+
+---
+
+## Real-World Context
+
+The project is aimed at real use cases:
+
+- private parking businesses,
+- shopping malls,
+- corporate buildings,
+- and controlled-access facilities.
+
+The goal is simple: easy for operators, trustworthy for management.
+
+---
+
+## Core Features
+
+- Token-based authentication with protected routes
+- Vehicle check-in by plate with spot assignment
+- Check-out flow with confirmation and updated pricing
+- Active tickets + searchable history
+- Dashboard with occupancy and revenue indicators
+- Reports with filters and export
+- Clear UI feedback (loading, empty states, success, errors)
 
 ---
 
@@ -22,52 +57,39 @@ Su objetivo es operar flujos reales: ingreso/salida de vehículos, historial de 
 - TypeScript
 - RxJS
 - Angular Material + Bootstrap
-- ngx-echarts (dashboard)
+- ngx-echarts
 
-Backend esperado:
+Expected backend:
 
 - Laravel API (`/api`)
-- Auth por Bearer token
+- Bearer token authentication
 
 ---
 
-## Arquitectura (simple y escalable)
+## Architecture (Simple View)
 
 ```txt
 src/app/
-  core/        # auth, interceptors, guards, api client base
-  shared/      # componentes reutilizables, servicios transversales, utilidades
-  features/    # routing por dominio (auth, dashboard, tickets, vehicles, etc.)
-  modules/     # implementación actual de pantallas por dominio (migración incremental)
+  core/      # auth, interceptors, guards, base HTTP layer
+  shared/    # reusable components, utilities, shared services
+  features/  # domain-based routing
+  modules/   # current implementation of each domain flow
 ```
 
-### Principios aplicados
-
-- Lógica de negocio en servicios/presenters, no en templates.
-- Consumo HTTP centralizado (`ApiClient` + `BaseApiService`).
-- Manejo global de auth y errores con interceptores.
-- Lazy loading por dominio para mejorar escalabilidad.
+Business logic is kept in services/presenters instead of large templates, so the code stays maintainable as the product grows.
 
 ---
 
-## Flujos principales
+## How to Run
 
-- **Auth:** login, persistencia de sesión, logout y protección de rutas.
-- **Tickets:** vista activa/historial, búsqueda, detalle, entrada/salida.
-- **Dashboard:** métricas y gráficos de ocupación/ingresos.
-- **Reportes:** filtros por rango/estado/placa y exportación.
+### 1) Start the backend
 
----
-
-## Ejecutar en local
-
-### 1) Backend (Laravel)
-
-Asegura que la API esté levantada y accesible. Ejemplo local:
+Make sure the Laravel API is available.  
+Local example:
 
 - `http://localhost:8080/api`
 
-### 2) Frontend
+### 2) Start the frontend
 
 ```bash
 cd parking-management-frontend
@@ -75,55 +97,44 @@ npm install
 npm start
 ```
 
-App en:
+Application URL:
 
 - `http://localhost:4200`
 
 ---
 
-## Configuración de entorno
+## Environment Configuration
 
-Editar:
+Review:
 
 - `src/environments/environment.ts`
 - `src/environments/environment.prod.ts`
 
-Ajusta:
+Key values:
 
-- `apiUrl`: URL base de la API Laravel
-- `timezone`: zona horaria de la app
-
----
-
-## Build de producción
-
-```bash
-npm run build
-```
-
-La salida se genera en `dist/`.
+- `apiUrl`: backend base URL
+- `timezone`: app timezone
 
 ---
 
-## Screenshots
+## For Clients
 
-Agrega aquí capturas reales del producto:
+If you need a parking platform (or a similar operations system), this project works as a strong production-ready base.
 
-- Dashboard
-- Lista de tickets
-- Formulario de ingreso
-- Reportes
+It can be adapted for:
+
+- multi-location parking,
+- custom pricing rules,
+- payment integrations,
+- camera/access integrations,
+- and role-specific dashboards.
+
+I can also tailor the architecture and UI flow to match your business process, not just deliver generic screens.
 
 ---
 
-## Enfoque de producto
+## Final Note
 
-Este proyecto está estructurado para escenarios reales de cliente:
+This project was built with a product mindset, not just to “look clean” in code.
 
-- Código mantenible para equipos pequeños/medianos.
-- Arquitectura incremental (evita reescrituras costosas).
-- Base lista para extender con módulos como pagos, multi-sede y auditoría.
-
-## Nota para portfolio
-
-Este proyecto simula un sistema real de gestión de parqueaderos, con decisiones técnicas enfocadas en operación diaria, mantenibilidad y escalabilidad gradual para un contexto SaaS/freelance.
+It is practical, scalable, and ready to be extended in real client environments.
