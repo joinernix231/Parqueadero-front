@@ -16,7 +16,7 @@ import { ParkingTicket } from '../../../shared/models/parking-ticket.model';
 import { LoadingSpinnerComponent } from '../../../shared/components/loading-spinner/loading-spinner.component';
 import { PaginationComponent } from '../../../shared/components/pagination/pagination.component';
 import { TicketStateService } from '../../state/ticket-state.service';
-import { DateTime } from 'luxon';
+import { formatDateTime } from '../../../../shared/utils/date-time.util';
 
 @Component({
   selector: 'app-ticket-list',
@@ -164,60 +164,7 @@ export class TicketListComponent implements OnInit {
   }
 
   formatDate(date: string): string {
-    if (!date || date === 'null' || date === '') return 'N/A';
-    try {
-      // Intentar parsear como ISO primero
-      let dateTime = DateTime.fromISO(date);
-      
-      // Si no es válido, intentar otros formatos
-      if (!dateTime.isValid) {
-        dateTime = DateTime.fromSQL(date);
-      }
-      
-      if (!dateTime.isValid) {
-        // Intentar formato de Laravel datetime 'Y-m-d H:i:s'
-        dateTime = DateTime.fromFormat(date, 'yyyy-MM-dd HH:mm:ss');
-      }
-      
-      if (!dateTime.isValid) {
-        // Intentar formato alternativo sin segundos
-        dateTime = DateTime.fromFormat(date, 'yyyy-MM-dd HH:mm');
-      }
-      
-      if (!dateTime.isValid) {
-        // Si aún no es válido, intentar con Date nativo
-        const nativeDate = new Date(date);
-        if (!isNaN(nativeDate.getTime())) {
-          return nativeDate.toLocaleString('es-ES', {
-            day: '2-digit',
-            month: '2-digit',
-            year: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
-          });
-        }
-        return date.length > 20 ? date.substring(0, 20) : date;
-      }
-      
-      return dateTime.toLocaleString(DateTime.DATETIME_SHORT);
-    } catch (error) {
-      console.warn('Error formatting date:', date, error);
-      try {
-        const nativeDate = new Date(date);
-        if (!isNaN(nativeDate.getTime())) {
-          return nativeDate.toLocaleString('es-ES', {
-            day: '2-digit',
-            month: '2-digit',
-            year: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
-          });
-        }
-      } catch (e) {
-        // Ignorar
-      }
-      return date || 'N/A';
-    }
+    return formatDateTime(date, 'N/A');
   }
 
   createNewTicket(): void {

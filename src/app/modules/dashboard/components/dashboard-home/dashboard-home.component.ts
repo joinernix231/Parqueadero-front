@@ -10,7 +10,7 @@ import { DashboardPresenter } from '../../presenters/dashboard.presenter';
 import { DashboardStateService } from '../../state/dashboard-state.service';
 import { LoadingSpinnerComponent } from '../../../shared/components/loading-spinner/loading-spinner.component';
 import { ParkingTicket } from '../../../shared/models/parking-ticket.model';
-import { DateTime } from 'luxon';
+import { formatDateTime, getHumanDuration } from '../../../../shared/utils/date-time.util';
 
 @Component({
   selector: 'app-dashboard-home',
@@ -245,80 +245,11 @@ export class DashboardHomeComponent implements OnInit {
   }
 
   formatDate(dateString: string | null | undefined): string {
-    if (!dateString || dateString === 'null' || dateString === '') return '-';
-    try {
-      // Intentar parsear como ISO primero
-      let date = DateTime.fromISO(dateString);
-      
-      // Si no es válido, intentar otros formatos
-      if (!date.isValid) {
-        date = DateTime.fromSQL(dateString);
-      }
-      
-      if (!date.isValid) {
-        // Intentar formato de Laravel datetime
-        date = DateTime.fromFormat(dateString, 'Y-m-d H:i:s');
-      }
-      
-      if (!date.isValid) {
-        // Si aún no es válido, devolver el string original truncado
-        return dateString.length > 20 ? dateString.substring(0, 20) : dateString;
-      }
-      
-      return date.toLocaleString(DateTime.DATETIME_SHORT);
-    } catch (error) {
-      console.warn('Error formatting date:', dateString, error);
-      return dateString || '-';
-    }
+    return formatDateTime(dateString, '-');
   }
 
   calculateHours(entryTime: string, exitTime: string | null): string {
-    try {
-      let entry = DateTime.fromISO(entryTime);
-      if (!entry.isValid) {
-        entry = DateTime.fromSQL(entryTime);
-      }
-      
-      if (!entry.isValid) {
-        entry = DateTime.fromFormat(entryTime, 'yyyy-MM-dd HH:mm:ss');
-      }
-      
-      if (!entry.isValid) {
-        return '0 minutos';
-      }
-
-      let exit: DateTime;
-      if (!exitTime) {
-        exit = DateTime.now();
-      } else {
-        exit = DateTime.fromISO(exitTime);
-        if (!exit.isValid) {
-          exit = DateTime.fromSQL(exitTime);
-        }
-        if (!exit.isValid) {
-          exit = DateTime.fromFormat(exitTime, 'yyyy-MM-dd HH:mm:ss');
-        }
-      }
-      
-      if (!exit.isValid) {
-        return '0 minutos';
-      }
-
-      const diff = exit.diff(entry, ['hours', 'minutes']);
-      const totalMinutes = Math.round(diff.as('minutes'));
-      const h = Math.floor(totalMinutes / 60);
-      const m = totalMinutes % 60;
-      
-      if (h === 0) {
-        return `${m} ${m === 1 ? 'minuto' : 'minutos'}`;
-      } else if (m === 0) {
-        return `${h} ${h === 1 ? 'hora' : 'horas'}`;
-      } else {
-        return `${h} ${h === 1 ? 'hora' : 'horas'} ${m} ${m === 1 ? 'minuto' : 'minutos'}`;
-      }
-    } catch (error) {
-      return '0 minutos';
-    }
+    return getHumanDuration(entryTime, exitTime);
   }
 }
 

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, DestroyRef, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
@@ -12,8 +12,8 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { debounceTime, distinctUntilChanged, switchMap, catchError } from 'rxjs/operators';
-import { of, Subject, Subscription } from 'rxjs';
-import { firstValueFrom } from 'rxjs';
+import { of, Subject, firstValueFrom } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TicketEntryPresenter } from '../../presenters/ticket-entry.presenter';
 import { TicketStateService } from '../../state/ticket-state.service';
 import { ParkingLotService } from '../../../parking-lots/services/parking-lot.service';
@@ -45,7 +45,7 @@ import { Vehicle } from '../../../shared/models/vehicle.model';
   templateUrl: './ticket-entry.component.html',
   styleUrl: './ticket-entry.component.scss'
 })
-export class TicketEntryComponent implements OnInit, OnDestroy {
+export class TicketEntryComponent implements OnInit {
   entryForm: FormGroup;
   vehicleForm: FormGroup;
   parkingLots: ParkingLot[] = [];
@@ -55,7 +55,7 @@ export class TicketEntryComponent implements OnInit, OnDestroy {
   isSearchingVehicle = false;
   showVehicleForm = false;
   plateSearchSubject = new Subject<string>();
-  private subscriptions = new Subscription();
+  private readonly destroyRef = inject(DestroyRef);
 
   vehicleTypes = [
     { value: 'car', label: 'Automóvil' },
@@ -89,22 +89,21 @@ export class TicketEntryComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.loadParkingLots();
     
-    const lotIdSub = this.entryForm.get('parking_lot_id')?.valueChanges.subscribe(lotId => {
-      if (lotId) {
-        this.loadAvailableSpots(lotId);
-        this.entryForm.get('parking_spot_id')?.enable();
-      } else {
-        this.availableSpots = [];
-        this.entryForm.get('parking_spot_id')?.setValue('');
-        this.entryForm.get('parking_spot_id')?.disable();
-      }
-    });
-    if (lotIdSub) {
-      this.subscriptions.add(lotIdSub);
-    }
+    this.entryForm.get('parking_lot_id')?.valueChanges
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((lotId) => {
+        if (lotId) {
+          this.loadAvailableSpots(lotId);
+          this.entryForm.get('parking_spot_id')?.enable();
+        } else {
+          this.availableSpots = [];
+          this.entryForm.get('parking_spot_id')?.setValue('');
+          this.entryForm.get('parking_spot_id')?.disable();
+        }
+      });
 
     // Búsqueda automática de vehículo al escribir la placa
-    const plateSearchSub = this.plateSearchSubject.pipe(
+    this.plateSearchSubject.pipe(
       debounceTime(500),
       distinctUntilChanged(),
       switchMap(plate => {
@@ -122,44 +121,19 @@ export class TicketEntryComponent implements OnInit, OnDestroy {
           this.showVehicleForm = false;
           return of(null);
         }
-      })
-    ).subscribe(response => {
-      this.isSearchingVehicle = false;
-      if (response?.data) {
-        this.foundVehicle = response.data;
-        this.showVehicleForm = false;
-        // Pre-llenar datos del vehículo encontrado
-        this.vehicleForm.patchValue({
-          owner_name: this.foundVehicle.owner_name,
-          phone: this.foundVehicle.phone,
-          vehicle_type: this.foundVehicle.vehicle_type
-        });
-      } else {
-        this.foundVehicle = null;
-        const plate = this.entryForm.get('plate')?.value;
-        if (plate && plate.length >= 4) {
-          this.showVehicleForm = true;
-        }
-      }
-    });
-    this.subscriptions.add(plateSearchSub);
-
+      }),
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe(response => this.handlePlateSearchResponse(response?.data ?? null));
     // Escuchar cambios en el campo de placa
-    const plateSub = this.entryForm.get('plate')?.valueChanges.subscribe(plate => {
-      if (plate) {
-        this.plateSearchSubject.next(plate.toUpperCase().trim());
-      } else {
-        this.foundVehicle = null;
-        this.showVehicleForm = false;
-      }
-    });
-    if (plateSub) {
-      this.subscriptions.add(plateSub);
-    }
+    this.entryForm.get('plate')?.valueChanges
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((plate) => {
+        if (plate) this.plateSearchSubject.next(this.normalizePlate(plate));
+        else this.resetVehicleSelection();
+      });
   }
 
   ngOnDestroy(): void {
-    this.subscriptions.unsubscribe();
     this.plateSearchSubject.complete();
   }
 
@@ -200,7 +174,7 @@ export class TicketEntryComponent implements OnInit, OnDestroy {
       // Si el vehículo no fue encontrado, incluir los datos del formulario
       if (!this.foundVehicle && this.showVehicleForm) {
         if (this.vehicleForm.valid) {
-          const plate = this.entryForm.get('plate')?.value?.toUpperCase().trim();
+          const plate = this.normalizePlate(this.entryForm.get('plate')?.value ?? '');
           formData.vehicle_data = {
             plate: plate,
             owner_name: this.vehicleForm.get('owner_name')?.value,
@@ -225,8 +199,7 @@ export class TicketEntryComponent implements OnInit, OnDestroy {
         // Solo limpiamos el formulario si todo fue exitoso
         this.entryForm.reset();
         this.vehicleForm.reset();
-        this.foundVehicle = null;
-        this.showVehicleForm = false;
+        this.resetVehicleSelection();
         this.entryForm.get('parking_spot_id')?.disable();
       } catch (error) {
         // El interceptor ya maneja y muestra los errores HTTP del backend
@@ -242,8 +215,36 @@ export class TicketEntryComponent implements OnInit, OnDestroy {
 
   onPlateInput(event: Event): void {
     const input = event.target as HTMLInputElement;
-    const plate = input.value.toUpperCase().trim();
+    const plate = this.normalizePlate(input.value);
     this.entryForm.get('plate')?.setValue(plate, { emitEvent: true });
+  }
+
+  private normalizePlate(rawPlate: string): string {
+    return rawPlate.toUpperCase().trim();
+  }
+
+  private resetVehicleSelection(): void {
+    this.foundVehicle = null;
+    this.showVehicleForm = false;
+  }
+
+  private handlePlateSearchResponse(vehicle: Vehicle | null): void {
+    this.isSearchingVehicle = false;
+
+    if (vehicle) {
+      this.foundVehicle = vehicle;
+      this.showVehicleForm = false;
+      this.vehicleForm.patchValue({
+        owner_name: vehicle.owner_name,
+        phone: vehicle.phone,
+        vehicle_type: vehicle.vehicle_type
+      });
+      return;
+    }
+
+    this.foundVehicle = null;
+    const plate = this.entryForm.get('plate')?.value;
+    this.showVehicleForm = Boolean(plate && plate.length >= 4);
   }
 }
 

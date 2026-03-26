@@ -7,7 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { AuthService } from '../../../services/auth.service';
+import { AuthService } from '../../../../../core/auth/auth.service';
 import { AuthPresenter } from '../../../../auth/presenters/auth.presenter';
 
 @Component({

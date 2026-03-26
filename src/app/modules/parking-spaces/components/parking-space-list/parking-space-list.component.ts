@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, DestroyRef, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
@@ -7,7 +7,6 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatChipsModule } from '@angular/material/chips';
-import { Subscription } from 'rxjs';
 import { firstValueFrom } from 'rxjs';
 import { ParkingSpacePresenter } from '../../presenters/parking-space.presenter';
 import { ParkingSpaceStateService } from '../../state/parking-space-state.service';
@@ -15,6 +14,7 @@ import { ParkingLotService } from '../../../parking-lots/services/parking-lot.se
 import { LoadingSpinnerComponent } from '../../../shared/components/loading-spinner/loading-spinner.component';
 import { ParkingSpot } from '../../../shared/models/parking-spot.model';
 import { ParkingLot } from '../../../shared/models/parking-lot.model';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-parking-space-list',
@@ -34,10 +34,10 @@ import { ParkingLot } from '../../../shared/models/parking-lot.model';
   templateUrl: './parking-space-list.component.html',
   styleUrl: './parking-space-list.component.scss'
 })
-export class ParkingSpaceListComponent implements OnInit, OnDestroy {
+export class ParkingSpaceListComponent implements OnInit {
   filterForm: FormGroup;
   parkingLots: ParkingLot[] = [];
-  private subscriptions = new Subscription();
+  private readonly destroyRef = inject(DestroyRef);
 
   constructor(
     private fb: FormBuilder,
@@ -52,18 +52,11 @@ export class ParkingSpaceListComponent implements OnInit, OnDestroy {
 
   async ngOnInit(): Promise<void> {
     await this.loadParkingLots();
-    const lotIdSub = this.filterForm.get('parking_lot_id')?.valueChanges.subscribe(lotId => {
-      if (lotId) {
-        this.parkingSpacePresenter.loadAvailableSpots(lotId);
-      }
-    });
-    if (lotIdSub) {
-      this.subscriptions.add(lotIdSub);
-    }
-  }
-
-  ngOnDestroy(): void {
-    this.subscriptions.unsubscribe();
+    this.filterForm.get('parking_lot_id')?.valueChanges
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((lotId) => {
+        if (lotId) this.parkingSpacePresenter.loadAvailableSpots(lotId);
+      });
   }
 
   async loadParkingLots(): Promise<void> {

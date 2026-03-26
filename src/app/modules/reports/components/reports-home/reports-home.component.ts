@@ -23,7 +23,7 @@ import { LoadingSpinnerComponent } from '../../../shared/components/loading-spin
 import { ParkingTicket } from '../../../shared/models/parking-ticket.model';
 import { ParkingLot } from '../../../shared/models/parking-lot.model';
 import { DateTime } from 'luxon';
-import { PaginatedResponse } from '../../../shared/models/api-response.model';
+import { formatDateTime } from '../../../../shared/utils/date-time.util';
 
 interface ReportFilters {
   date_from?: string;
@@ -270,27 +270,7 @@ export class ReportsHomeComponent implements OnInit {
   }
 
   formatDate(dateString: string | null | undefined): string {
-    if (!dateString || dateString === 'null' || dateString === '') return '-';
-    try {
-      let date = DateTime.fromISO(dateString);
-      
-      if (!date.isValid) {
-        date = DateTime.fromSQL(dateString);
-      }
-      
-      if (!date.isValid) {
-        date = DateTime.fromFormat(dateString, 'yyyy-MM-dd HH:mm:ss');
-      }
-      
-      if (!date.isValid) {
-        return dateString.length > 20 ? dateString.substring(0, 20) : dateString;
-      }
-      
-      return date.toFormat('dd/MM/yyyy HH:mm');
-    } catch (error) {
-      console.warn('Error formatting date:', dateString, error);
-      return dateString || '-';
-    }
+    return formatDateTime(dateString, '-');
   }
 
   getTicketStatus(ticket: ParkingTicket): { text: string; class: string } {

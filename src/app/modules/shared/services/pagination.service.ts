@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { PaginationState, DEFAULT_PAGE_SIZE } from '../models/pagination.model';
-import { PaginationMeta } from '../models/api-response.model';
+import { PaginationMeta } from '../../../core/api/models/api-response.model';
 
 @Injectable({
   providedIn: 'root'

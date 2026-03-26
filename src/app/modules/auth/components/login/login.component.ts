@@ -9,7 +9,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { AuthPresenter } from '../../presenters/auth.presenter';
-import { AuthStateService } from '../../state/auth-state.service';
+import { AuthService } from '../../../../core/auth/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -36,7 +36,8 @@ export class LoginComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private authPresenter: AuthPresenter,
-    private authState: AuthStateService
+    private authService: AuthService,
+    private router: Router
   ) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -45,18 +46,13 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // Si ya está autenticado, redirigir al dashboard
-    if (this.authState.isAuthenticated()) {
+    if (this.authService.isAuthenticated()) {
       this.router.navigate(['/dashboard']);
     }
   }
 
-  get router(): Router {
-    return this.authPresenter['router'];
-  }
-
   get isLoading(): boolean {
-    return this.authState.isLoading();
+    return this.authPresenter.isLoading();
   }
 
   get emailControl() {
@@ -68,22 +64,14 @@ export class LoginComponent implements OnInit {
   }
 
   getEmailError(): string {
-    if (this.emailControl?.hasError('required')) {
-      return 'El correo electrónico es obligatorio';
-    }
-    if (this.emailControl?.hasError('email')) {
-      return 'El formato del correo electrónico no es válido';
-    }
+    if (this.emailControl?.hasError('required')) return 'El correo electrónico es obligatorio';
+    if (this.emailControl?.hasError('email')) return 'El formato del correo electrónico no es válido';
     return '';
   }
 
   getPasswordError(): string {
-    if (this.passwordControl?.hasError('required')) {
-      return 'La contraseña es obligatoria';
-    }
-    if (this.passwordControl?.hasError('minlength')) {
-      return 'La contraseña debe tener al menos 6 caracteres';
-    }
+    if (this.passwordControl?.hasError('required')) return 'La contraseña es obligatoria';
+    if (this.passwordControl?.hasError('minlength')) return 'La contraseña debe tener al menos 6 caracteres';
     return '';
   }
 
@@ -91,8 +79,8 @@ export class LoginComponent implements OnInit {
     if (this.loginForm.valid) {
       try {
         await this.authPresenter.login(this.loginForm.value);
-      } catch (error) {
-        // Error ya manejado en el presenter
+      } catch {
+        // El presentador ya mostró el error al usuario
       }
     } else {
       this.loginForm.markAllAsTouched();
@@ -103,7 +91,3 @@ export class LoginComponent implements OnInit {
     this.hidePassword = !this.hidePassword;
   }
 }
-
-
-
-

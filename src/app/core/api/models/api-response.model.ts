@@ -3,11 +3,6 @@ export interface ApiResponse<T> {
   message?: string;
 }
 
-export interface PaginatedResponse<T> {
-  data: T[];
-  meta: PaginationMeta;
-}
-
 export interface PaginationMeta {
   current_page: number;
   last_page: number;
@@ -15,12 +10,8 @@ export interface PaginationMeta {
   total: number;
 }
 
-export interface ApiError {
-  message: string;
-  errors?: Record<string, string[]>;
+export interface PaginatedResponse<T> {
+  data: T[];
+  meta: PaginationMeta;
 }
-
-
-
-
 

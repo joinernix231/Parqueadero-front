@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { ApiService } from '../../shared/services/api.service';
-import { PaginatedResponse, ApiResponse } from '../../shared/models/api-response.model';
+import { BaseApiService } from '../../../core/api/base-api.service';
+import { PaginatedResponse, ApiResponse } from '../../../core/api/models/api-response.model';
 import { ParkingTicket } from '../../shared/models/parking-ticket.model';
 
 export interface DashboardStats {
@@ -20,12 +20,12 @@ export interface DashboardStats {
   providedIn: 'root'
 })
 export class DashboardService {
-  constructor(private apiService: ApiService) {}
+  constructor(private readonly api: BaseApiService) {}
 
   getCurrentParkedVehicles(parkingLotId?: number): Observable<PaginatedResponse<ParkingTicket>> {
     const params = parkingLotId ? { parking_lot_id: parkingLotId } : {};
     // El endpoint /parking/current devuelve { data: ParkingTicket[] } no paginado
-    return this.apiService.get<ParkingTicket[]>('/parking/current', params).pipe(
+    return this.api.getResponse<ParkingTicket[]>('/parking/current', params).pipe(
       map(response => {
         const tickets = Array.isArray(response.data) ? response.data : [];
         return {
@@ -45,7 +45,7 @@ export class DashboardService {
     // Solo para mostrar tickets recientes en la tabla, no para estadísticas
     // Limitar a máximo 99 para cumplir con las restricciones del backend
     const safeLimit = Math.min(Math.max(1, limit), 99);
-    return this.apiService.getPaginated<ParkingTicket>('/parking/history', {
+    return this.api.getPaginated<ParkingTicket>('/parking/history', {
       per_page: safeLimit.toString(),
       page: '1'
     });
@@ -54,7 +54,7 @@ export class DashboardService {
   getDashboardStats(): Observable<ApiResponse<DashboardStats>> {
     // Endpoint optimizado que devuelve solo estadísticas (números) sin cargar tickets completos
     // NO usa /parking/history, usa /dashboard/stats que es mucho más eficiente
-    return this.apiService.get<DashboardStats>('/dashboard/stats');
+    return this.api.getResponse<DashboardStats>('/dashboard/stats');
   }
 }
 

@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { authGuard } from './modules/shared/guards/auth.guard';
+import { authGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
   {
@@ -9,7 +9,7 @@ export const routes: Routes = [
   },
   {
     path: 'login',
-    loadChildren: () => import('./modules/auth/auth.routes').then(m => m.authRoutes)
+    loadChildren: () => import('./features/auth/auth.routes').then(m => m.authRoutes)
   },
   {
     path: '',
@@ -18,27 +18,27 @@ export const routes: Routes = [
     children: [
       {
         path: 'dashboard',
-        loadChildren: () => import('./modules/dashboard/dashboard.routes').then(m => m.dashboardRoutes)
+        loadChildren: () => import('./features/dashboard/dashboard.routes').then(m => m.dashboardRoutes)
       },
       {
         path: 'parking-lots',
-        loadChildren: () => import('./modules/parking-lots/parking-lots.routes').then(m => m.parkingLotsRoutes)
+        loadChildren: () => import('./features/parking-lots/parking-lots.routes').then(m => m.parkingLotsRoutes)
       },
       {
         path: 'parking-spaces',
-        loadChildren: () => import('./modules/parking-spaces/parking-spaces.routes').then(m => m.parkingSpacesRoutes)
+        loadChildren: () => import('./features/parking-spaces/parking-spaces.routes').then(m => m.parkingSpacesRoutes)
       },
       {
         path: 'vehicles',
-        loadChildren: () => import('./modules/vehicles/vehicles.routes').then(m => m.vehiclesRoutes)
+        loadChildren: () => import('./features/vehicles/vehicles.routes').then(m => m.vehiclesRoutes)
       },
       {
         path: 'tickets',
-        loadChildren: () => import('./modules/tickets/tickets.routes').then(m => m.ticketsRoutes)
+        loadChildren: () => import('./features/tickets/tickets.routes').then(m => m.ticketsRoutes)
       },
       {
         path: 'reports',
-        loadChildren: () => import('./modules/reports/reports.routes').then(m => m.reportsRoutes)
+        loadChildren: () => import('./features/reports/reports.routes').then(m => m.reportsRoutes)
       }
     ]
   },
