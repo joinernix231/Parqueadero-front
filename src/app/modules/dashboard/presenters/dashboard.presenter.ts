@@ -48,9 +48,8 @@ export class DashboardPresenter {
           weekDays: stats.week_days
         });
       }
-    } catch (error: unknown) {
+    } catch {
       this.alertService.showError('Error al cargar datos del dashboard');
-      console.error('Dashboard error:', error);
     } finally {
       this.dashboardState.setLoading(false);
     }

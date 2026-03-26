@@ -1,20 +1,24 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { Router, RouterModule } from '@angular/router';
+import { RouterModule } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { debounceTime, distinctUntilChanged, switchMap, catchError } from 'rxjs/operators';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { firstValueFrom } from 'rxjs';
+import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { of, Subject, Subscription, interval } from 'rxjs';
 import { TicketExitPresenter } from '../../presenters/ticket-exit.presenter';
 import { TicketStateService } from '../../state/ticket-state.service';
 import { TicketPreviewComponent } from '../ticket-preview/ticket-preview.component';
 import { ParkingTicket } from '../../../shared/models/parking-ticket.model';
 import { PriceCalculation } from '../../services/ticket.service';
+import { AlertService } from '../../../shared/services/alert.service';
+import { ExitConfirmationDialogComponent } from '../ticket-detail/exit-confirmation-dialog.component';
 
 @Component({
   selector: 'app-ticket-exit',
@@ -29,6 +33,7 @@ import { PriceCalculation } from '../../services/ticket.service';
     MatButtonModule,
     MatIconModule,
     MatProgressSpinnerModule,
+    MatDialogModule,
     TicketPreviewComponent
   ],
   providers: [TicketExitPresenter],
@@ -47,9 +52,10 @@ export class TicketExitComponent implements OnInit, OnDestroy {
 
   constructor(
     private fb: FormBuilder,
-    private router: Router,
     private ticketExitPresenter: TicketExitPresenter,
-    public ticketState: TicketStateService
+    public ticketState: TicketStateService,
+    private alertService: AlertService,
+    private dialog: MatDialog
   ) {
     this.exitForm = this.fb.group({
       plate: ['', Validators.required]
@@ -57,8 +63,8 @@ export class TicketExitComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    // Búsqueda automática de ticket al escribir la placa
-    const plateSearchSub = this.plateSearchSubject.pipe(
+    // Búsqueda por placa con un pequeño debounce para no disparar requests por cada tecla.
+    const searchSub = this.plateSearchSubject.pipe(
       debounceTime(500),
       distinctUntilChanged(),
       switchMap(plate => {
@@ -81,25 +87,21 @@ export class TicketExitComponent implements OnInit, OnDestroy {
             });
           });
         } else {
-          this.foundTicket = null;
-          this.priceCalculation = null;
-          this.stopPriceUpdateInterval();
+          this.resetTicketPreview();
           return of(null);
         }
       })
     ).subscribe(() => {
       this.isSearchingTicket = false;
     });
-    this.subscriptions.add(plateSearchSub);
+    this.subscriptions.add(searchSub);
 
     // Escuchar cambios en el campo de placa
     const plateSub = this.exitForm.get('plate')?.valueChanges.subscribe(plate => {
       if (plate) {
         this.plateSearchSubject.next(plate.toUpperCase().trim());
       } else {
-        this.foundTicket = null;
-        this.priceCalculation = null;
-        this.stopPriceUpdateInterval();
+        this.resetTicketPreview();
       }
     });
     if (plateSub) {
@@ -123,8 +125,6 @@ export class TicketExitComponent implements OnInit, OnDestroy {
     try {
       this.isCalculatingPrice = true;
       this.priceCalculation = await this.ticketExitPresenter.calculatePrice(this.foundTicket.id);
-    } catch (error) {
-      console.error('Error calculating price:', error);
     } finally {
       this.isCalculatingPrice = false;
     }
@@ -147,6 +147,12 @@ export class TicketExitComponent implements OnInit, OnDestroy {
     }
   }
 
+  private resetTicketPreview(): void {
+    this.foundTicket = null;
+    this.priceCalculation = null;
+    this.stopPriceUpdateInterval();
+  }
+
   async downloadReceiptBeforeExit(): Promise<void> {
     if (!this.foundTicket?.id) return;
     try {
@@ -161,8 +167,22 @@ export class TicketExitComponent implements OnInit, OnDestroy {
       this.exitForm.markAllAsTouched();
       return;
     }
+    if (!this.priceCalculation) {
+      this.alertService.showWarning('Aun no se pudo calcular el precio. Intenta de nuevo en unos segundos.');
+      return;
+    }
 
     try {
+      const dialogRef = this.dialog.open(ExitConfirmationDialogComponent, {
+        width: '500px',
+        data: {
+          vehicle: this.foundTicket.vehicle,
+          calculatedPrice: this.priceCalculation
+        }
+      });
+      const confirmed = await firstValueFrom(dialogRef.afterClosed());
+      if (!confirmed) return;
+
       this.stopPriceUpdateInterval();
       await this.ticketExitPresenter.registerExit({
         plate: this.exitForm.get('plate')?.value

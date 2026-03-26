@@ -15,6 +15,7 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { firstValueFrom } from 'rxjs';
+import { Router } from '@angular/router';
 import { TicketService } from '../../../tickets/services/ticket.service';
 import { ParkingLotService } from '../../../parking-lots/services/parking-lot.service';
 import { AlertService } from '../../../shared/services/alert.service';
@@ -102,7 +103,8 @@ export class ReportsHomeComponent implements OnInit {
     private parkingLotService: ParkingLotService,
     private alertService: AlertService,
     private exportService: ExportService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private router: Router
   ) {
     this.filterForm = this.fb.group({
       date_from: [null],
@@ -124,8 +126,8 @@ export class ReportsHomeComponent implements OnInit {
       if (response?.data) {
         this.parkingLots.set(response.data);
       }
-    } catch (error) {
-      console.error('Error loading parking lots:', error);
+    } catch {
+      this.alertService.showWarning('No se pudo cargar la lista de estacionamientos.');
     }
   }
 
@@ -149,9 +151,8 @@ export class ReportsHomeComponent implements OnInit {
         this.totalItems = response.meta?.total || 0;
         this.calculateStats(response.data);
       }
-    } catch (error: unknown) {
+    } catch {
       this.alertService.showError('Error al cargar reportes');
-      console.error('Error loading reports:', error);
     } finally {
       this.isLoading.set(false);
     }
@@ -251,9 +252,8 @@ export class ReportsHomeComponent implements OnInit {
       );
       
       this.alertService.showSuccess('Reporte exportado exitosamente');
-    } catch (error) {
+    } catch {
       this.alertService.showError('Error al exportar reporte');
-      console.error('Export error:', error);
     } finally {
       this.isExporting.set(false);
     }
@@ -263,9 +263,8 @@ export class ReportsHomeComponent implements OnInit {
     try {
       await this.exportService.exportSummaryReport(this.stats, 'resumen_estadisticas');
       this.alertService.showSuccess('Resumen exportado exitosamente');
-    } catch (error) {
+    } catch {
       this.alertService.showError('Error al exportar resumen');
-      console.error('Export error:', error);
     }
   }
 
@@ -302,5 +301,9 @@ export class ReportsHomeComponent implements OnInit {
       value.parking_lot_id ||
       value.status
     );
+  }
+
+  viewTicketDetail(ticketId: number): void {
+    this.router.navigate(['/tickets', ticketId]);
   }
 }

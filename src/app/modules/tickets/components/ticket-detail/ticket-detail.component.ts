@@ -15,7 +15,9 @@ import { ParkingTicket } from '../../../shared/models/parking-ticket.model';
 import { LoadingSpinnerComponent } from '../../../shared/components/loading-spinner/loading-spinner.component';
 import { AlertService } from '../../../shared/services/alert.service';
 import { ExitConfirmationDialogComponent } from './exit-confirmation-dialog.component';
+import { PriceCalculation } from '../../services/ticket.service';
 import { DateTime } from 'luxon';
+import { formatDateTime } from '../../../../shared/utils/date-time.util';
 
 @Component({
   selector: 'app-ticket-detail',
@@ -38,7 +40,7 @@ import { DateTime } from 'luxon';
 export class TicketDetailComponent implements OnInit {
   ticket = signal<ParkingTicket | null>(null);
   isLoading = signal<boolean>(false);
-  calculatedPrice = signal<any>(null);
+  calculatedPrice = signal<PriceCalculation | null>(null);
   ticketId!: number;
 
   constructor(
@@ -81,8 +83,8 @@ export class TicketDetailComponent implements OnInit {
       if (response?.data) {
         this.calculatedPrice.set(response.data);
       }
-    } catch (error) {
-      console.error('Error calculating price:', error);
+    } catch {
+      this.alertService.showWarning('No se pudo calcular el precio en este momento.');
     }
   }
 
@@ -117,8 +119,8 @@ export class TicketDetailComponent implements OnInit {
         // Descargar PDF de salida automáticamente
         try {
           await this.ticketService.downloadExitReceipt(response.data.id);
-        } catch (pdfError) {
-          console.error('Error al descargar recibo de salida:', pdfError);
+        } catch {
+          this.alertService.showInfo('Salida registrada. No se pudo descargar el recibo automaticamente.');
         }
         
         // Recargar el ticket después de registrar la salida
@@ -148,36 +150,7 @@ export class TicketDetailComponent implements OnInit {
   }
 
   formatDate(date: string | null): string {
-    if (!date || date === 'null' || date === '') return 'N/A';
-    try {
-      // Intentar parsear como ISO primero
-      let dateTime = DateTime.fromISO(date);
-      
-      // Si no es válido, intentar otros formatos
-      if (!dateTime.isValid) {
-        dateTime = DateTime.fromSQL(date);
-      }
-      
-      if (!dateTime.isValid) {
-        // Intentar formato de Laravel datetime 'Y-m-d H:i:s'
-        dateTime = DateTime.fromFormat(date, 'yyyy-MM-dd HH:mm:ss');
-      }
-      
-      if (!dateTime.isValid) {
-        // Intentar formato alternativo sin segundos
-        dateTime = DateTime.fromFormat(date, 'yyyy-MM-dd HH:mm');
-      }
-      
-      if (!dateTime.isValid) {
-        // Si aún no es válido, devolver el string original truncado
-        return date.length > 20 ? date.substring(0, 20) : date;
-      }
-      
-      return dateTime.toLocaleString(DateTime.DATETIME_MED);
-    } catch (error) {
-      console.warn('Error formatting date:', date, error);
-      return date || 'N/A';
-    }
+    return formatDateTime(date, 'N/A');
   }
 
   /**

@@ -7,10 +7,10 @@ import { TokenStorageService } from '../auth/token-storage.service';
 import { AlertService } from '../../modules/shared/services/alert.service';
 
 function extractErrorMessage(error: HttpErrorResponse): string {
-  // Si hay un mensaje directo en error.error.message (ej: {"message":"El vehículo ya tiene un ticket activo"})
+  // Mensaje directo desde backend, si viene disponible.
   if (error.error?.message) return error.error.message;
 
-  // Si hay errores de validación (422) con estructura errors
+  // Primer error de validación cuando backend responde con errors.
   if (error.error?.errors && typeof error.error.errors === 'object') {
     const validationErrors = error.error.errors as Record<string, string[] | string>;
     const firstError = Object.values(validationErrors)[0];
@@ -56,14 +56,14 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
 
       const url = error.url ?? '';
 
-      // Un 401 fuera del endpoint de login significa sesión expirada o revocada.
+      // Token vencido/revocado: limpiamos sesión y volvemos a login.
       if (error.status === 401 && !url.endsWith('/login')) {
         tokenStorage.clear();
         router.navigate(['/login'], { queryParams: { returnUrl: router.url } });
         return throwError(() => error);
       }
 
-      // 404 en búsqueda por placa es un resultado esperado, no un error de usuario.
+      // Buscar por placa puede devolver 404 sin que sea un problema de UX.
       const isSilent404 = error.status === 404 && url.includes('/vehicles/search-by-plate');
       if (!isSilent404) alertService.showError(extractErrorMessage(error));
 

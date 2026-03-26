@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 import { TicketService, PriceCalculation } from '../services/ticket.service';
@@ -24,15 +25,9 @@ export class TicketExitPresenter {
         return response.data;
       }
       return null;
-    } catch (error: unknown) {
-      // El interceptor ya maneja y muestra los errores HTTP del backend
-      // Solo retornamos null si es un 404 (ticket no encontrado es esperado)
-      const httpError = error as any;
-      if (httpError?.status === 404) {
-        // No mostrar error para 404, es esperado cuando no se encuentra ticket
-        return null;
-      }
-      // Para otros errores, el interceptor ya los muestra
+    } catch (error) {
+      // Si no hay ticket activo para esa placa, devolvemos null y listo.
+      if (error instanceof HttpErrorResponse && error.status === 404) return null;
       return null;
     }
   }
@@ -41,8 +36,7 @@ export class TicketExitPresenter {
     try {
       const response = await firstValueFrom(this.ticketService.calculatePrice(ticketId));
       return response?.data || null;
-    } catch (error: unknown) {
-      // El interceptor ya maneja y muestra los errores HTTP del backend
+    } catch {
       return null;
     }
   }
@@ -50,8 +44,7 @@ export class TicketExitPresenter {
   async downloadReceiptBeforeExit(ticketId: number): Promise<void> {
     try {
       await this.ticketService.downloadEntryReceipt(ticketId);
-    } catch (error: unknown) {
-      // El interceptor ya maneja y muestra los errores HTTP del backend
+    } catch (error) {
       throw error;
     }
   }
@@ -68,16 +61,13 @@ export class TicketExitPresenter {
         // Opción de descargar PDF de salida
         try {
           await this.ticketService.downloadExitReceipt(response.data.id);
-        } catch (pdfError) {
-          console.error('Error al descargar recibo de salida:', pdfError);
-          // No mostrar error al usuario, solo loguear
+        } catch {
+          this.alertService.showInfo('Salida registrada. No se pudo descargar el recibo automaticamente.');
         }
         
         this.router.navigate(['/tickets']);
       }
-    } catch (error: unknown) {
-      // El interceptor ya maneja y muestra los errores HTTP del backend
-      // Solo relanzamos el error para que el componente pueda manejarlo si es necesario
+    } catch (error) {
       throw error;
     } finally {
       this.ticketState.setLoading(false);

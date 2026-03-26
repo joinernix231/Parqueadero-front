@@ -260,7 +260,8 @@
                   <button 
                     mat-icon-button 
                     [matTooltip]="'Ver detalles del ticket #' + ticket.id"
-                    color="primary">
+                    color="primary"
+                    (click)="viewTicketDetail(ticket.id)">
                     <mat-icon>visibility</mat-icon>
                   </button>
                 </td>
