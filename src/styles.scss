@@ -6,17 +6,7 @@
 @use './styles/colors' as *;
 @use './styles/spacing' as *;
 
-// Bootstrap (mantener @import por compatibilidad)
-@import 'bootstrap/scss/bootstrap';
-
-// FontAwesome (mantener @import por compatibilidad)
-@import '@fortawesome/fontawesome-free/scss/fontawesome';
-@import '@fortawesome/fontawesome-free/scss/solid';
-@import '@fortawesome/fontawesome-free/scss/regular';
-@import '@fortawesome/fontawesome-free/scss/brands';
-
-// Angular Material Theme
-@import '@angular/material/prebuilt-themes/indigo-pink.css';
+// Librerías globales (Bootstrap, FontAwesome y tema Material) se cargan desde angular.json
 
 // Snackbar styles
 .success-snackbar {

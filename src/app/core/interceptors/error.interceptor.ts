@@ -59,7 +59,7 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
       // Un 401 fuera del endpoint de login significa sesión expirada o revocada.
       if (error.status === 401 && !url.endsWith('/login')) {
         tokenStorage.clear();
-        router.navigate(['/login']);
+        router.navigate(['/login'], { queryParams: { returnUrl: router.url } });
         return throwError(() => error);
       }
 

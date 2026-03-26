@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -8,7 +8,7 @@ import { CommonModule } from '@angular/common';
   template: `
     <div class="loading-spinner-container">
       <div class="loading-spinner"></div>
-      <p *ngIf="message" class="loading-message">{{ message }}</p>
+      <p *ngIf="message()" class="loading-message">{{ message() }}</p>
     </div>
   `,
   styles: [`
@@ -43,7 +43,7 @@ import { CommonModule } from '@angular/common';
   `]
 })
 export class LoadingSpinnerComponent {
-  message?: string;
+  readonly message = input<string>();
 }
 
 

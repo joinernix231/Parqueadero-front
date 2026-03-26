@@ -36,8 +36,7 @@ export class VehiclePresenter {
         this.vehicleState.setPagination(this.paginationService.createPaginationState(response.meta));
       }
     } catch (error: unknown) {
-      this.alertService.showError('Error al cargar vehículos');
-      console.error('Error loading vehicles:', error);
+      // El interceptor ya se encarga de mostrar errores HTTP.
     } finally {
       this.vehicleState.setLoading(false);
     }
@@ -54,7 +53,7 @@ export class VehiclePresenter {
         this.router.navigate(['/vehicles']);
       }
     } catch (error: unknown) {
-      this.alertService.showError('Error al registrar el vehículo');
+      // El interceptor ya se encarga de mostrar errores HTTP.
       throw error;
     } finally {
       this.vehicleState.setLoading(false);

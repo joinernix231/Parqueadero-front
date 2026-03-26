@@ -28,8 +28,7 @@ export class TicketEntryPresenter {
         try {
           await this.ticketService.downloadEntryReceipt(response.data.id);
         } catch (pdfError) {
-          console.error('Error al descargar recibo:', pdfError);
-          // No mostrar error al usuario, solo loguear
+          this.alertService.showInfo('Entrada registrada. No se pudo descargar el recibo automáticamente.');
         }
         
         this.router.navigate(['/tickets']);

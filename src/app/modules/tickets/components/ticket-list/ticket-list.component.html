@@ -33,11 +33,11 @@
       </div>
       
       <div class="action-buttons">
-        <button mat-stroked-button color="primary" class="action-btn">
+        <button mat-stroked-button color="primary" class="action-btn" (click)="onExportXlsx()" [disabled]="isLoading">
           <mat-icon>download</mat-icon>
           Descargar XLSX
         </button>
-        <button mat-raised-button color="primary" class="action-btn primary-btn" (click)="createNewTicket()">
+        <button mat-raised-button color="primary" class="action-btn primary-btn" (click)="createNewTicket()" [disabled]="isLoading">
           <mat-icon>add</mat-icon>
           Crear ticket
         </button>

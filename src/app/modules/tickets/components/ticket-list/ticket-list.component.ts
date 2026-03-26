@@ -17,6 +17,7 @@ import { LoadingSpinnerComponent } from '../../../shared/components/loading-spin
 import { PaginationComponent } from '../../../shared/components/pagination/pagination.component';
 import { TicketStateService } from '../../state/ticket-state.service';
 import { formatDateTime } from '../../../../shared/utils/date-time.util';
+import { AlertService } from '../../../shared/services/alert.service';
 
 @Component({
   selector: 'app-ticket-list',
@@ -63,6 +64,7 @@ export class TicketListComponent implements OnInit {
     private ticketListPresenter: TicketListPresenter,
     public ticketState: TicketStateService,
     private router: Router,
+    private alertService: AlertService
   ) {}
 
   ngOnInit(): void {
@@ -169,6 +171,10 @@ export class TicketListComponent implements OnInit {
 
   createNewTicket(): void {
     this.router.navigate(['/tickets/entry']);
+  }
+
+  onExportXlsx(): void {
+    this.alertService.showInfo('La exportación desde listado estará disponible en una próxima iteración.');
   }
 }
 

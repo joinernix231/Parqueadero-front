@@ -47,7 +47,8 @@ export class LoginComponent implements OnInit {
 
   ngOnInit(): void {
     if (this.authService.isAuthenticated()) {
-      this.router.navigate(['/dashboard']);
+      const returnUrl = this.router.parseUrl(this.router.url).queryParams['returnUrl'] || '/dashboard';
+      this.router.navigateByUrl(returnUrl);
     }
   }
 

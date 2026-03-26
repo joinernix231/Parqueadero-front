@@ -14,8 +14,10 @@
           <mat-spinner diameter="20" class="button-spinner"></mat-spinner>
           <span>Exportando...</span>
         } @else {
-          <mat-icon>download</mat-icon>
-          <span>Exportar a Excel</span>
+          <ng-container>
+            <mat-icon>download</mat-icon>
+            <span>Exportar a Excel</span>
+          </ng-container>
         }
       </button>
       <button 

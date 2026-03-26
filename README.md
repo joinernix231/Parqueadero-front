@@ -123,3 +123,7 @@ Este proyecto está estructurado para escenarios reales de cliente:
 - Código mantenible para equipos pequeños/medianos.
 - Arquitectura incremental (evita reescrituras costosas).
 - Base lista para extender con módulos como pagos, multi-sede y auditoría.
+
+## Nota para portfolio
+
+Este proyecto simula un sistema real de gestión de parqueaderos, con decisiones técnicas enfocadas en operación diaria, mantenibilidad y escalabilidad gradual para un contexto SaaS/freelance.
